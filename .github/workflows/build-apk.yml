@@ -24,17 +24,14 @@ jobs:
           distribution: 'zulu'
           java-version: 17
 
-      - name: 4. Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: 5. Initialize Capacitor Project
+      - name: 4. Initialize Capacitor Project
         run: |
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
           npx cap init "Alpha Radar Pro" "com.alpharadar.pro" --web-dir www
           npx cap add android
 
-      - name: 6. Configure Permissions & Android Settings
+      - name: 5. Configure Permissions & Android Settings
         run: |
           MANIFEST="android/app/src/main/AndroidManifest.xml"
           if ! grep -q "android.permission.INTERNET" "$MANIFEST"; then
@@ -49,13 +46,13 @@ jobs:
           sed -i 's/<application /<application android:usesCleartextTraffic="true" /' "$MANIFEST"
           npx cap sync android
 
-      - name: 7. Build Debug APK with Gradle
+      - name: 6. Build Debug APK with Gradle
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: 8. Upload Built APK as Artifact
+      - name: 7. Upload Built APK as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: AlphaRadar-APK
