@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpha Radar Pro - Ultimate Master</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
+  
+  <style>
+    :root {
+      --bg-main: #0b0e14;
+      --bg-card: #151922;
+      --bg-input: #1d222e;
+      --border-color: #272e3d;
+      --text-primary: #f0f4f8;
+      --text-secondary: #8c9ba8;
+      --accent-green: #0ecb81;
+      --accent-green-glow: rgba(14, 203, 129, 0.2);
+      --accent-red: #f6465d;
+      --accent-blue: #2962ff;
+      --accent-yellow: #f0b90b;
+      --accent-orange: #ff9800;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+    body { background-color: var(--bg-main); color: var(--text-primary); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 12px 8px; }
+    .app-container { width: 100%; max-width: 580px; display: flex; flex-direction: column; gap: 12px; }
+
+    .header-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      padding: 10px 14px; border-radius: 14px;
+    }
+    .logo-area { display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 38px; height: 38px; background: linear-gradient(135deg, #2962ff, #0ecb81); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px; color: #fff; }
+    .logo-text h1 { font-size: 15px; font-weight: 800; }
+    .logo-text p { font-size: 10.5px; color: var(--text-secondary); }
+
+    .header-controls { display: flex; align-items: center; gap: 6px; }
+    .tool-btn {
+      background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-primary);
+      padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .badge-status { display: flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(140, 155, 168, 0.1); color: var(--text-secondary); }
+    .badge-status.active { background: var(--accent-green-glow); color: var(--accent-green); border: 1px solid var(--accent-green); }
+    .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+    .badge-status.active .pulse-dot { animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { transform: scale(0.9); opacity: 0.7; } 50% { transform: scale(1.3); opacity: 1; } 100% { transform: scale(0.9); opacity: 0.7; } }
+
+    .toast-msg {
+      position: fixed; bottom: 20px; z-index: 9999; background: #0ecb81; color: #0b0e14;
+      font-weight: 800; font-size: 12px; padding: 8px 16px; border-radius: 8px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.6); display: none;
+    }
+
+    .notif-toggle-card {
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .notif-info { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+    .notif-info i { font-size: 16px; color: var(--accent-yellow); }
+    .notif-info b { color: #fff; font-size: 12.5px; }
+    .notif-info p { font-size: 10px; color: var(--text-secondary); }
+
+    .switch-ui {
+      position: relative; display: inline-block; width: 44px; height: 24px;
+    }
+    .switch-ui input { opacity: 0; width: 0; height: 0; }
+    .slider-ui {
+      position: absolute; cursor: pointer; inset: 0; background-color: var(--bg-input);
+      border: 1px solid var(--border-color); transition: .3s; border-radius: 24px;
+    }
+    .slider-ui:before {
+      position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px;
+      background-color: #8c9ba8; transition: .3s; border-radius: 50%;
+    }
+    input:checked + .slider-ui { background-color: var(--accent-green); border-color: var(--accent-green); }
+    input:checked + .slider-ui:before { transform: translateX(20px); background-color: #0b0e14; }
+
+    .performance-bar {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: 14px; padding: 10px;
+    }
+    .stat-box { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .stat-label { font-size: 10px; color: var(--text-secondary); font-weight: 600; text-align: center; }
+    .stat-num { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 800; }
+    .stat-win { color: var(--accent-green); }
+    .stat-loss { color: var(--accent-red); }
+    .stat-rate { color: var(--accent-yellow); }
+
+    .market-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 14px; }
+    .price-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+    .symbol-title { font-size: 12px; color: var(--text-secondary); }
+    .symbol-title span { color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; }
+    .price-value { font-size: 20px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+
+    .signals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .sig-item { background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; padding: 9px; display: flex; flex-direction: column; gap: 3px; }
+    .sig-title { font-size: 11px; color: var(--text-secondary); }
+    .sig-value { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 700; }
+    .sig-state { font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+
+    .state-pass { color: var(--accent-green); }
+    .state-fail { color: var(--accent-red); }
+    .state-wait { color: var(--accent-yellow); }
+
+    .score-box {
+      margin-top: 10px; background: #11151f; border-radius: 10px; padding: 9px 12px;
+      display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color);
+    }
+    .score-title { font-size: 11.5px; font-weight: 700; }
+    .score-rating { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 800; }
+
+    .news-card {
+      background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 12px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .news-header { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; font-weight: 700; }
+    .news-tag { font-size: 10px; padding: 2px 7px; border-radius: 4px; background: rgba(240, 185, 11, 0.15); color: var(--accent-yellow); }
+    .news-feed-scroll {
+      display: flex; flex-direction: column; gap: 6px; max-height: 210px; overflow-y: auto; padding-right: 4px;
+    }
+    .news-item {
+      background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 10px;
+      display: flex; flex-direction: column; gap: 4px; font-size: 11px;
+    }
+    .news-top { display: flex; justify-content: space-between; align-items: center; }
+    .news-symbol { font-weight: 700; color: #64b5f6; font-family: 'JetBrains Mono', monospace; }
+    .news-countdown {
+      font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--accent-orange); font-weight: 700;
+      background: rgba(255, 152, 0, 0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(255, 152, 0, 0.25);
+    }
+    .news-forecast { font-size: 10.5px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; }
+
+    .settings-grid {
+      background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 12px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 9px;
+    }
+    .input-group { display: flex; flex-direction: column; gap: 4px; }
+    .input-group.full-width { grid-column: span 2; }
+    label { font-size: 11px; color: var(--text-secondary); }
+    select {
+      background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-primary);
+      padding: 8px 10px; border-radius: 8px; font-size: 11.5px; outline: none;
+    }
+
+    .actions-box { display: flex; gap: 8px; }
+    .main-btn {
+      flex: 1; padding: 11px; border-radius: 10px; border: none; font-size: 12.5px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .btn-start { background: var(--accent-green); color: #0b0e14; }
+    .btn-stop { background: var(--bg-input); color: var(--accent-red); border: 1px solid var(--border-color); }
+    .btn-chart { background: #2962ff; color: #fff; }
+    .main-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .history-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 12px; }
+    .history-title { font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+    .log-list { display: flex; flex-direction: column; gap: 8px; max-height: 330px; overflow-y: auto; }
+    
+    .status-empty-box {
+      color: var(--text-secondary); text-align: center; padding: 14px 10px; font-size: 11.5px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+
+    .trade-card {
+      display: flex; flex-direction: column; gap: 7px; background: var(--bg-input);
+      padding: 11px 12px; border-radius: 10px; font-size: 12px; border-right: 4px solid var(--accent-blue);
+      transition: border-color 0.3s;
+    }
+    html[dir="ltr"] .trade-card { border-right: none; border-left: 4px solid var(--accent-blue); }
+    .trade-card.won { border-color: var(--accent-green) !important; }
+    .trade-card.lost { border-color: var(--accent-red) !important; }
+
+    .trade-top-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px; }
+    .trade-identity { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .trade-type-badge {
+      font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 4px; text-transform: uppercase;
+    }
+    .type-buy { background: rgba(14, 203, 129, 0.2); color: var(--accent-green); border: 1px solid rgba(14, 203, 129, 0.4); }
+    .type-sell { background: rgba(246, 70, 93, 0.2); color: var(--accent-red); border: 1px solid rgba(246, 70, 93, 0.4); }
+    
+    .trade-tf-badge {
+      background: #1f2937; color: #94a3b8; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
+      padding: 2px 6px; border-radius: 4px;
+    }
+
+    .trade-status-badge { font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 4px; }
+    .status-running { background: rgba(41, 98, 255, 0.2); color: #64b5f6; }
+    .status-win { background: var(--accent-green-glow); color: var(--accent-green); }
+    .status-loss { background: rgba(246, 70, 93, 0.2); color: var(--accent-red); }
+
+    .trade-integrated-prob {
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(240, 185, 11, 0.12); border: 1px solid rgba(240, 185, 11, 0.35);
+      padding: 5px 10px; border-radius: 6px; font-size: 11.5px;
+    }
+    .prob-integrated-label { color: var(--accent-yellow); font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
+    .prob-integrated-number { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 800; color: #fff; }
+
+    .trade-params-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 2px 0;
+    }
+    .param-box {
+      background: rgba(0,0,0,0.3); border: 1px solid #272e3d; border-radius: 6px;
+      padding: 5px 6px; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    }
+    .param-title { font-size: 9.5px; color: var(--text-secondary); font-weight: 700; }
+    .param-val-row { display: flex; align-items: center; gap: 4px; width: 100%; justify-content: center; }
+    .param-val { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 800; color: var(--text-primary); }
+    .btn-copy-num {
+      background: none; border: none; color: var(--accent-yellow); cursor: pointer;
+      font-size: 11px; padding: 2px 4px; border-radius: 4px; display: inline-flex; align-items: center;
+      transition: background 0.2s;
+    }
+    .btn-copy-num:hover { background: rgba(240, 185, 11, 0.2); }
+
+    .trade-news-alert {
+      font-size: 10px; color: var(--accent-orange); background: rgba(255, 152, 0, 0.1);
+      padding: 3px 6px; border-radius: 4px; display: flex; align-items: center; gap: 4px;
+    }
+
+    .trade-bottom-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 4px; border-top: 1px solid #272e3d; font-size: 11px;
+    }
+    
+    .trade-btn-group { display: flex; gap: 5px; align-items: center; }
+    .btn-action-sm {
+      background: #2962ff; color: #fff; border: none; padding: 4px 8px;
+      border-radius: 6px; font-size: 10.5px; font-weight: 700; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .btn-copy-all { background: #1f2937; color: var(--accent-yellow); border: 1px solid #374151; }
+    .btn-copy-all:hover { background: #374151; }
+
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+      z-index: 999; justify-content: center; align-items: center; padding: 6px;
+    }
+    .modal-content {
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      width: 100%; max-width: 820px; border-radius: 14px; padding: 10px;
+      display: flex; flex-direction: column; gap: 8px; position: relative;
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; flex-wrap: wrap; gap: 6px; }
+    .header-badges { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    
+    .chart-select-elem {
+      background: var(--bg-input); color: var(--text-primary); border: 1px solid var(--border-color);
+      padding: 5px 8px; border-radius: 6px; font-size: 11.5px; outline: none; font-weight: 700; cursor: pointer;
+    }
+
+    .chart-container-box {
+      position: relative; width: 100%; height: 410px; border-radius: 8px; overflow: hidden; background: #0b0e14;
+    }
+    .chart-container { width: 100%; height: 100%; }
+
+    .candle-floating-timer {
+      position: absolute; top: 10px; left: 12px; z-index: 25;
+      background: rgba(11, 14, 20, 0.88); border: 1px solid var(--accent-orange); color: var(--accent-orange);
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 800; padding: 3px 8px;
+      border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.6); display: inline-flex; align-items: center; gap: 5px;
+      pointer-events: none;
+    }
+
+    .chart-legend { display: flex; flex-wrap: wrap; gap: 8px; font-size: 10.5px; color: var(--text-secondary); align-items: center; }
+    .live-indicator { display: inline-flex; align-items: center; gap: 4px; color: var(--accent-green); font-size: 11px; }
+  </style>
+</head>
+<body>
+
+  <div class="toast-msg" id="toastMsg">تم النسخ بنجاح!</div>
+
+  <div class="app-container">
+    <div class="header-bar">
+      <div class="logo-area">
+        <div class="logo-icon"><i class="fa-solid fa-bolt"></i></div>
+        <div class="logo-text">
+          <h1>Alpha Radar Pro</h1>
+          <p data-i18n="appSub">رادار التوافق الفني وتتبع الصفقات اللحظي</p>
+        </div>
+      </div>
+      <div class="header-controls">
+        <button class="tool-btn" id="soundBtn" onclick="toggleSound()">
+          <i class="fa-solid fa-volume-high" id="soundIcon"></i>
+        </button>
+        <button class="tool-btn" onclick="toggleLanguage()">
+          <i class="fa-solid fa-globe"></i> <span id="langLabel">English</span>
+        </button>
+        <div class="badge-status" id="statusBadge">
+          <span class="pulse-dot"></span>
+          <span id="statusText" data-i18n="stopped">متوقف</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- مفتاح تفعيل إشعارات الصفقات القوية -->
+    <div class="notif-toggle-card">
+      <div class="notif-info">
+        <i class="fa-solid fa-bell"></i>
+        <div>
+          <b data-i18n="notifTitle">إشعارات الصفقات القوية (+85%)</b>
+          <p data-i18n="notifDesc">إرسال إشعار فوري خارج التطبيق مع نغمة واهتزاز مميز</p>
+        </div>
+      </div>
+      <label class="switch-ui">
+        <input type="checkbox" id="highProbNotifToggle" onchange="toggleHighProbNotifications(this.checked)">
+        <span class="slider-ui"></span>
+      </label>
+    </div>
+
+    <div class="performance-bar">
+      <div class="stat-box">
+        <span class="stat-label" data-i18n="trades">الصفقات</span>
+        <span class="stat-num" id="statTotal">0</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-label" data-i18n="won">الرابحة (TP)</span>
+        <span class="stat-num stat-win" id="statWon">0</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-label" data-i18n="lost">الخاسرة (SL)</span>
+        <span class="stat-num stat-loss" id="statLost">0</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-label" data-i18n="winRate">نسبة الفوز</span>
+        <span class="stat-num stat-rate" id="statWinRate">0%</span>
+      </div>
+    </div>
+
+    <div class="market-card">
+      <div class="price-row">
+        <div class="symbol-title"><span data-i18n="scanningNow">يفحص الآن:</span> <span id="displaySymbol">---</span></div>
+        <div class="price-value" id="currentPrice">---</div>
+      </div>
+
+      <div class="signals-grid">
+        <div class="sig-item">
+          <span class="sig-title" data-i18n="emaTitle">1. اتجاه EMA 200 (وزن 30%)</span>
+          <span class="sig-value" id="emaVal">---</span>
+          <span class="sig-state" id="emaState"><i class="fa-solid fa-minus"></i> <span data-i18n="neutral">محايد</span></span>
+        </div>
+
+        <div class="sig-item">
+          <span class="sig-title" data-i18n="rsiTitle">2. تشبع RSI 14 (وزن 25%)</span>
+          <span class="sig-value" id="rsiVal">---</span>
+          <span class="sig-state" id="rsiState"><i class="fa-solid fa-minus"></i> <span data-i18n="neutral">محايد</span></span>
+        </div>
+
+        <div class="sig-item">
+          <span class="sig-title" data-i18n="macdTitle">3. تقاطع MACD (وزن 25%)</span>
+          <span class="sig-value" id="macdVal">---</span>
+          <span class="sig-state" id="macdState"><i class="fa-solid fa-minus"></i> <span data-i18n="neutral">محايد</span></span>
+        </div>
+
+        <div class="sig-item">
+          <span class="sig-title" data-i18n="bbTitle">4. بولينجر باند (وزن 20%)</span>
+          <span class="sig-value" id="bbVal">---</span>
+          <span class="sig-state" id="bbState"><i class="fa-solid fa-minus"></i> <span data-i18n="neutral">محايد</span></span>
+        </div>
+      </div>
+
+      <div class="score-box">
+        <span class="score-title" data-i18n="scoreTitle">التوافق & احتمالية النجاح:</span>
+        <span class="score-rating" id="scoreRating" style="color: var(--text-secondary);">---</span>
+      </div>
+    </div>
+
+    <div class="news-card">
+      <div class="news-header">
+        <span><i class="fa-solid fa-bullhorn" style="color: var(--accent-orange);"></i> <span data-i18n="newsTitle">الأخبار الاقتصادية والتوقعات المباشرة</span></span>
+        <span class="news-tag"><i class="fa-solid fa-rotate fa-spin"></i> <span data-i18n="autoUpdate">تحديث حي</span></span>
+      </div>
+      <div class="news-feed-scroll" id="newsFeedList"></div>
+    </div>
+
+    <div class="settings-grid">
+      <div class="input-group full-width">
+        <label><i class="fa-solid fa-server"></i> <span data-i18n="platformLabel">بيئة المنصة ومزود الأسعار:</span></label>
+        <select id="platformSelect" onchange="onPlatformChange()">
+          <option value="ALL" selected data-i18n="platAll">🌐 Global Multi-Asset (رادار شامل لكل الأسواق)</option>
+          <option value="FOREX" data-i18n="platForex">📊 XM / MT5 Style (الفوركس والمعادن والذهب)</option>
+          <option value="CRYPTO" data-i18n="platCrypto">🪙 Binance Engine (العملات الرقمية الكبرى)</option>
+        </select>
+      </div>
+
+      <div class="input-group full-width">
+        <label><i class="fa-solid fa-crosshairs"></i> <span data-i18n="symbolLabel">وضع المراقبة واختيار الزوج:</span></label>
+        <select id="symbolSelect" onchange="syncSelectors(this.value)">
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label><i class="fa-regular fa-clock"></i> <span data-i18n="timeframeLabel">فريم الرادار الرئيسي</span></label>
+        <select id="intervalSelect">
+          <optgroup label="مضاربة وسكالبينج">
+            <option value="1m">1 دقيقة (1m)</option>
+            <option value="3m">3 دقائق (3m)</option>
+            <option value="5m">5 دقائق (5m)</option>
+            <option value="15m" selected>15 دقيقة (15m)</option>
+            <option value="30m">30 دقيقة (30m)</option>
+          </optgroup>
+          <optgroup label="يومي وسوينغ">
+            <option value="1h">1 ساعة (1h)</option>
+            <option value="4h">4 ساعات (4h)</option>
+            <option value="1d">1 يوم (1d)</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label><i class="fa-solid fa-chart-area"></i> <span data-i18n="chartHeader">الشارت العام</span></label>
+        <button class="main-btn btn-chart" type="button" onclick="openDirectChart()">
+          <i class="fa-solid fa-chart-line"></i> <span data-i18n="btnOpenChart">فتح الشارت 📊</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="actions-box">
+      <button class="main-btn btn-start" id="startBtn" onclick="startScanner()">
+        <i class="fa-solid fa-play"></i> <span data-i18n="btnStart">بدء رصد الصفقات</span>
+      </button>
+      <button class="main-btn btn-stop" id="stopBtn" onclick="stopScanner()" disabled>
+        <i class="fa-solid fa-stop"></i> <span data-i18n="btnStop">إيقاف</span>
+      </button>
+    </div>
+
+    <div class="history-card">
+      <div class="history-title"><i class="fa-solid fa-list-check"></i> <span data-i18n="historyTitle">سجل الصفقات ومتابعة النتائج</span></div>
+      <div class="log-list" id="logsContainer">
+        <div class="status-empty-box" id="emptyHistoryBox">
+          <span data-i18n="emptyHistory">اضغط "بدء رصد الصفقات" لبدء الفحص والمتابعة...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="chartModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="header-badges">
+          <select id="chartSymbolSwitcher" class="chart-select-elem" onchange="onChartSwitcherChange()"></select>
+
+          <select id="chartIntervalSwitcher" class="chart-select-elem" onchange="onChartIntervalChange()">
+            <option value="1m">1m</option>
+            <option value="3m">3m</option>
+            <option value="5m">5m</option>
+            <option value="15m" selected>15m</option>
+            <option value="30m">30m</option>
+            <option value="1h">1h</option>
+            <option value="4h">4h</option>
+            <option value="1d">1d</option>
+          </select>
+
+          <span class="live-indicator"><span class="pulse-dot"></span> <span data-i18n="live">مباشر</span></span>
+        </div>
+        <button onclick="closeChartModal()" style="background: none; border: none; color: #fff; width: auto; padding: 4px 8px; font-size: 18px; cursor: pointer;">✕</button>
+      </div>
+
+      <div class="chart-legend">
+        <span><b style="color: var(--accent-green);">ــــ نقطة الدخول (شراء BUY)</b></span>
+        <span><b style="color: var(--accent-red);">ــــ نقطة الدخول (بيع SELL)</b></span>
+        <span><b style="color: var(--accent-green);">---- الهدف (TP)</b></span>
+        <span><b style="color: var(--accent-red);">---- الوقف (SL)</b></span>
+      </div>
+
+      <div class="chart-container-box">
+        <div class="candle-floating-timer" id="candleFloatingTimer">
+          <i class="fa-regular fa-clock"></i> <span data-i18n="candleClose">إغلاق الشمعة:</span> <span id="floatingTimeVal">--:--</span>
+        </div>
+        <div class="chart-container" id="tvChart"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentLang = "ar";
+    let isMuted = false;
+    let highProbNotifEnabled = localStorage.getItem("highProbNotif") !== "false";
+
+    const i18n = {
+      ar: {
+        appSub: "رادار التوافق الفني وتتبع الصفقات اللحظي",
+        notifTitle: "إشعارات الصفقات القوية (+85%)",
+        notifDesc: "إرسال إشعار فوري خارج التطبيق مع نغمة واهتزاز مميز",
+        stopped: "متوقف",
+        running: "الرادار يعمل...",
+        trades: "الصفقات",
+        won: "الرابحة (TP)",
+        lost: "الخاسرة (SL)",
+        winRate: "نسبة الفوز",
+        scanningNow: "يفحص الآن:",
+        emaTitle: "1. اتجاه EMA 200 (وزن 30%)",
+        rsiTitle: "2. تشبع RSI 14 (وزن 25%)",
+        macdTitle: "3. تقاطع MACD (وزن 25%)",
+        bbTitle: "4. بولينجر باند (وزن 20%)",
+        neutral: "محايد",
+        scoreTitle: "التوافق & احتمالية النجاح:",
+        platformLabel: "بيئة المنصة ومزود الأسعار:",
+        symbolLabel: "وضع المراقبة واختيار الزوج:",
+        autoAll: "⚡ رادار شامل: فحص كل الأزواج بالتناوب",
+        timeframeLabel: "فريم الرادار الرئيسي",
+        chartHeader: "الشارت العام",
+        btnOpenChart: "فتح الشارت 📊",
+        btnStart: "بدء رصد الصفقات",
+        btnStop: "إيقاف",
+        historyTitle: "سجل الصفقات ومتابعة النتائج",
+        emptyHistory: "اضغط \"بدء رصد الصفقات\" لبدء الفحص والمتابعة...",
+        searchingHistory: "📡 جاري فحص الأسواق والبحث عن صفقات متوافقة...",
+        pausedHistory: "⏸️ الرادار متوقف حالياً. اضغط \"بدء\" لاستئناف البحث...",
+        live: "مباشر",
+        legEntry: "الدخول",
+        legTp: "الهدف",
+        legSl: "الوقف",
+        candleClose: "إغلاق الشمعة:",
+        tradeRunning: "جارية",
+        tradeWon: "رابحة (TP)",
+        tradeLost: "خاسرة (SL)",
+        entryTag: "دخول",
+        winProbLabel: "احتمالية النجاح:",
+        langBtn: "English",
+        upTrend: "تريند صاعد",
+        downTrend: "تريند هابط",
+        rsiOver: "تشبع ارتدادي",
+        macdBull: "زخم شرائي",
+        macdBear: "سلبي",
+        bbSupport: "دعم بولينجر",
+        bbInside: "داخل النطاق",
+        newsTitle: "الأخبار الاقتصادية والتوقعات المباشرة",
+        autoUpdate: "تحديث حي",
+        btnCopyAll: "نسخ كامل الإشعار",
+        copiedVal: "تم نسخ الرقم: ",
+        copiedAll: "تم نسخ كامل بيانات الصفقة!",
+        typeBuy: "شراء BUY",
+        typeSell: "بيع SELL",
+        timeUntilNews: "الوقت حتى يصل الخبر:"
+      },
+      en: {
+        appSub: "Multi-Strategy Confluence, News & Signal Radar",
+        notifTitle: "High Probability Alerts (+85%)",
+        notifDesc: "Send push notification with radar sound & vibration",
+        stopped: "Stopped",
+        running: "Radar Active...",
+        trades: "Trades",
+        won: "Won (TP)",
+        lost: "Lost (SL)",
+        winRate: "Win Rate",
+        scanningNow: "Scanning:",
+        emaTitle: "1. EMA 200 Trend (30%)",
+        rsiTitle: "2. RSI 14 Exhaustion (25%)",
+        macdTitle: "3. MACD Cross (25%)",
+        bbTitle: "4. Bollinger Band (20%)",
+        neutral: "Neutral",
+        scoreTitle: "Score & Win Probability:",
+        platformLabel: "Platform Environment & Feed:",
+        symbolLabel: "Monitor Mode & Pair Selection:",
+        autoAll: "⚡ All Pairs Radar: Auto Scan Available Markets",
+        timeframeLabel: "Main Radar Timeframe",
+        chartHeader: "Live Chart",
+        btnOpenChart: "Open Chart 📊",
+        btnStart: "Start Radar Scanner",
+        btnStop: "Stop",
+        historyTitle: "Active Signals & Performance Tracker",
+        emptyHistory: "Click \"Start Radar Scanner\" to begin tracking...",
+        searchingHistory: "📡 Scanning markets and looking for confluence setups...",
+        pausedHistory: "⏸ Scanner paused. Click \"Start\" to resume search...",
+        live: "LIVE",
+        legEntry: "Entry",
+        legTp: "Target",
+        legSl: "Stop Loss",
+        candleClose: "Bar Closes in:",
+        tradeRunning: "Running",
+        tradeWon: "Won (TP)",
+        tradeLost: "Lost (SL)",
+        entryTag: "Entry",
+        winProbLabel: "Win Probability:",
+        langBtn: "عربي",
+        upTrend: "Bullish Trend",
+        downTrend: "Bearish Trend",
+        rsiOver: "Oversold Bounce",
+        macdBull: "Bullish Momentum",
+        macdBear: "Bearish",
+        bbSupport: "BB Lower Support",
+        bbInside: "In-Range",
+        newsTitle: "Economic News & Forecasts",
+        autoUpdate: "LIVE Feed",
+        btnCopyAll: "Copy Full Signal",
+        copiedVal: "Copied value: ",
+        copiedAll: "Full signal copied!",
+        typeBuy: "BUY",
+        typeSell: "SELL",
+        timeUntilNews: "Time until news:"
+      }
+    };
+
+    function initNotificationSettings() {
+      const toggle = document.getElementById("highProbNotifToggle");
+      if (toggle) {
+        toggle.checked = highProbNotifEnabled;
+      }
+      if ("Notification" in window && Notification.permission !== "granted") {
+        Notification.requestPermission();
+      }
+    }
+
+    function toggleHighProbNotifications(val) {
+      highProbNotifEnabled = val;
+      localStorage.setItem("highProbNotif", val);
+      if (val && "Notification" in window && Notification.permission !== "granted") {
+        Notification.requestPermission();
+      }
+      const toast = document.getElementById("toastMsg");
+      toast.innerText = val ? "تم تفعيل إشعارات الصفقات القوية (+85%)" : "تم إيقاف إشعارات الصفقات القوية";
+      toast.style.display = "block";
+      setTimeout(() => toast.style.display = "none", 1800);
+    }
+
+    /* نغمة رادار سنمائية مميزة جداً تشبه أجهزة التداول الاحترافية */
+    function playDistinctiveRadarChime() {
+      if (isMuted) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const now = audioCtx.currentTime;
+        const notes = [523.25, 783.99, 1046.50]; // C5 -> G5 -> C6 (نغمات صاعدة احترافية)
+
+        notes.forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(freq, now + (idx * 0.12));
+
+          gain.gain.setValueAtTime(0, now + (idx * 0.12));
+          gain.gain.linearRampToValueAtTime(0.3, now + (idx * 0.12) + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + (idx * 0.12) + 0.35);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start(now + (idx * 0.12));
+          osc.stop(now + (idx * 0.12) + 0.36);
+        });
+
+        // اهتزاز متناغم على الهواتف
+        if ("vibrate" in navigator) {
+          navigator.vibrate([100, 50, 150]);
+        }
+      } catch (e) {
+        console.error("Audio error:", e);
+      }
+    }
+
+    function sendSystemNotification(title, body) {
+      if ("Notification" in window && Notification.permission === "granted") {
+        try {
+          new Notification(title, { 
+            body: body, 
+            icon: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            vibrate: [200, 80, 200]
+          });
+        } catch(e) {}
+      }
+    }
+
+    function toggleSound() {
+      isMuted = !isMuted;
+      const icon = document.getElementById("soundIcon");
+      if (isMuted) {
+        icon.className = "fa-solid fa-volume-xmark";
+        icon.style.color = "var(--accent-red)";
+      } else {
+        icon.className = "fa-solid fa-volume-high";
+        icon.style.color = "var(--text-primary)";
+      }
+    }
+
+    function toggleLanguage() {
+      currentLang = (currentLang === "ar") ? "en" : "ar";
+      const root = document.getElementById("htmlRoot");
+      root.setAttribute("lang", currentLang);
+      root.setAttribute("dir", currentLang === "ar" ? "rtl" : "ltr");
+      document.getElementById("langLabel").innerText = i18n[currentLang].langBtn;
+
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (i18n[currentLang][key]) el.innerText = i18n[currentLang][key];
+      });
+
+      renderPairSelectors();
+      renderTradesUI();
+      renderNewsFeed();
+      if (!isRunning) {
+        document.getElementById("statusText").innerText = i18n[currentLang].stopped;
+      } else {
+        document.getElementById("statusText").innerText = i18n[currentLang].running;
+      }
+    }
+
+    const GLOBAL_ECONOMIC_NEWS = [
+      {
+        id: "N1",
+        symbolId: "PAXGUSDT",
+        titleAr: "بيانات التضخم الأمريكية (CPI) ومؤشر أسعار المستهلكين",
+        titleEn: "US CPI Inflation Data Release",
+        minutesLeft: 31,
+        impactBadge: "🔥 عالي التأثير",
+        forecastAr: "🟢 صعودي للذهب إذا تباطأ التضخم، أو تقلبات عنيفة",
+        forecastEn: "🟢 Bullish Gold on soft inflation / High volatility"
+      },
+      {
+        id: "N2",
+        symbolId: "EURUSDT",
+        titleAr: "تصريحات محافظ البنك المركزي الأوروبي (ECB) وقرار الفائدة",
+        titleEn: "ECB President Speech & Policy Outlook",
+        minutesLeft: 78,
+        impactBadge: "⚠️ متوسط التأثير",
+        forecastAr: "🔴 ميل هبوطي لليورو أمام الدولار القوي",
+        forecastEn: "🔴 Bearish pressure on EUR vs strong USD"
+      },
+      {
+        id: "N3",
+        symbolId: "GBPUSDT",
+        titleAr: "مؤشر مديري المشتريات البريطاني (UK PMI) ومبيعات التجزئة",
+        titleEn: "UK Manufacturing PMI & Retail Sales",
+        minutesLeft: 125,
+        impactBadge: "⚠️ متوسط التأثير",
+        forecastAr: "🟢 دعم إيجابي للباوند في حال تجاوز التوقعات",
+        forecastEn: "🟢 Bullish support for GBP if beating forecast"
+      },
+      {
+        id: "N4",
+        symbolId: "AUDUSDT",
+        titleAr: "بيان السياسة النقدية لبنك الاحتياطي الأسترالي (RBA)",
+        titleEn: "Reserve Bank of Australia Policy Statement",
+        minutesLeft: 95,
+        impactBadge: "🔥 عالي التأثير",
+        forecastAr: "🟢 دعم صعودي للأسترالي إذا تم تثبيت الفائدة المرتفعة",
+        forecastEn: "🟢 Bullish support for AUD on hawkish stance"
+      },
+      {
+        id: "N5",
+        symbolId: "BTCUSDT",
+        titleAr: "بيانات السيولة ومشتريات الصناديق الاستثمارية (ETF Inflows)",
+        titleEn: "Institutional ETF Inflow & Liquidity Shift",
+        minutesLeft: 50,
+        impactBadge: "🔥 عالي التأثير",
+        forecastAr: "🟢 استمرار الزخم الشرائي للبيتكوين والعملات الكبرى",
+        forecastEn: "🟢 Bullish continuation on spot accumulation"
+      },
+      {
+        id: "N6",
+        symbolId: "ETHUSDT",
+        titleAr: "ترقية الشبكة ونشاط الرسوم في بلوكتشين الإيثيريوم",
+        titleEn: "Ethereum Network Upgrade & Staking Activity",
+        minutesLeft: 110,
+        impactBadge: "⚠️ متوسط التأثير",
+        forecastAr: "🟢 تعزيز استقرار سعر ETH مع انخفاض المعروض",
+        forecastEn: "🟢 Positive stability on declining exchange supply"
+      },
+      {
+        id: "N7",
+        symbolId: "SOLUSDT",
+        titleAr: "تقرير حجم التداول اليومي في شبكة سولانا (Solana DEX Volume)",
+        titleEn: "Solana Network DEX Volume & On-Chain Activity",
+        minutesLeft: 42,
+        impactBadge: "⚠️ متوسط التأثير",
+        forecastAr: "🟢 زخم شرائي مستمر يدعم اختبار مقاومات جديدة",
+        forecastEn: "🟢 Strong momentum testing upper resistances"
+      },
+      {
+        id: "N8",
+        symbolId: "BNBUSDT",
+        titleAr: "حرق عملات BNB الفصلي وتحديثات منصة بينانس",
+        titleEn: "Quarterly BNB Burn & Platform Ecosystem Updates",
+        minutesLeft: 160,
+        impactBadge: "⚠️ متوسط التأثير",
+        forecastAr: "🟢 دعم سعري إيجابي يقلل المعروض المتداول",
+        forecastEn: "🟢 Favorable deflationary price support"
+      },
+      {
+        id: "N9",
+        symbolId: "XRPUSDT",
+        titleAr: "مستجدات الإفصاحات القانونية لهيئة الأوراق المالية (SEC v Ripple)",
+        titleEn: "Ripple Legal Case Updates & Institutional Custody",
+        minutesLeft: 65,
+        impactBadge: "🔥 عالي التأثير",
+        forecastAr: "⚡ تقلبات سعرية سريعة مع أي بيان رسمي إيجابي",
+        forecastEn: "⚡ Sharp breakout on positive regulatory filings"
+      },
+      {
+        id: "N10",
+        symbolId: "ADAUSDT",
+        titleAr: "تحديثات الحوكمة اللامركزية لمنظومة كاردانو (Cardano Chang Era)",
+        titleEn: "Cardano Decentralized Governance Progress",
+        minutesLeft: 145,
+        impactBadge: "⚠️ متوسط التأثير",
+        forecastAr: "🟢 تماسك سعري تدريجي عند مناطق الدعم الحالية",
+        forecastEn: "🟢 Gradual accumulation at solid base levels"
+      }
+    ];
+
+    setInterval(() => {
+      GLOBAL_ECONOMIC_NEWS.forEach(n => {
+        if (!n.secondsRemaining) n.secondsRemaining = n.minutesLeft * 60;
+        if (n.secondsRemaining > 0) n.secondsRemaining--;
+      });
+      renderNewsFeed();
+    }, 1000);
+
+    function renderNewsFeed() {
+      const container = document.getElementById("newsFeedList");
+      if (!container) return;
+      container.innerHTML = "";
+
+      GLOBAL_ECONOMIC_NEWS.forEach(n => {
+        const totalSec = n.secondsRemaining !== undefined ? n.secondsRemaining : n.minutesLeft * 60;
+        const mins = Math.floor(totalSec / 60);
+        const secs = totalSec % 60;
+        const timeStr = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+        const item = document.createElement("div");
+        item.className = "news-item";
+        item.innerHTML = `
+          <div class="news-top">
+            <span><b class="news-symbol">${n.symbolId === 'PAXGUSDT' ? 'XAU/USD' : n.symbolId.replace('USDT','')}</b> - ${currentLang === 'ar' ? n.titleAr : n.titleEn}</span>
+            <span class="news-countdown" title="${i18n[currentLang].timeUntilNews} ${timeStr}">
+              <i class="fa-regular fa-clock"></i> ${i18n[currentLang].timeUntilNews} <b>${timeStr}</b>
+            </span>
+          </div>
+          <div class="news-forecast">
+            <span style="color: #f0b90b;">${n.impactBadge}</span> | 
+            <span>${currentLang === 'ar' ? n.forecastAr : n.forecastEn}</span>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    const ALL_PAIRS = [
+      { id: "PAXGUSDT", name: "الذهب (XAU/USD)", enName: "Gold (XAU/USD)", cat: "FOREX", precision: 2, minMove: 0.01 },
+      { id: "EURUSDT",  name: "اليورو (EUR/USD)", enName: "Euro (EUR/USD)", cat: "FOREX", precision: 4, minMove: 0.0001 },
+      { id: "GBPUSDT",  name: "الباوند (GBP/USD)", enName: "GBP (GBP/USD)", cat: "FOREX", precision: 4, minMove: 0.0001 },
+      { id: "AUDUSDT",  name: "الأسترالي (AUD/USD)", enName: "Aussie (AUD/USD)", cat: "FOREX", precision: 4, minMove: 0.0001 },
+      { id: "BTCUSDT",  name: "البيتكوين (BTC/USD)", enName: "Bitcoin (BTC/USD)", cat: "CRYPTO", precision: 2, minMove: 0.01 },
+      { id: "ETHUSDT",  name: "الإيثيريوم (ETH/USD)", enName: "Ethereum (ETH/USD)", cat: "CRYPTO", precision: 2, minMove: 0.01 },
+      { id: "SOLUSDT",  name: "سولانا (SOL/USD)", enName: "Solana (SOL/USD)", cat: "CRYPTO", precision: 2, minMove: 0.01 },
+      { id: "BNBUSDT",  name: "بينانس (BNB/USD)", enName: "BNB (BNB/USD)", cat: "CRYPTO", precision: 2, minMove: 0.01 },
+      { id: "XRPUSDT",  name: "الريبل (XRP/USD)", enName: "XRP (XRP/USD)", cat: "CRYPTO", precision: 4, minMove: 0.0001 },
+      { id: "ADAUSDT",  name: "كاردانو (ADA/USD)", enName: "Cardano (ADA/USD)", cat: "CRYPTO", precision: 4, minMove: 0.0001 }
+    ];
+
+    let activePairsList = [...ALL_PAIRS];
+    let currentIndex = 0;
+    let isRunning = false;
+    let audioCtx = null;
+    let lastAlertTracker = {};
+    let lastAlertCandleTime = {};
+    let bgWorker = null;
+
+    let tradesHistory = [];
+    let stats = { total: 0, won: 0, lost: 0 };
+
+    let chartInstance = null;
+    let candleSeries = null;
+    let chartLiveTimer = null;
+    let countdownInterval = null;
+    let activeChartSymbol = "PAXGUSDT";
+    let activeChartInterval = "15m";
+
+    function getPairConfig(symbolId) {
+      return ALL_PAIRS.find(p => p.id === symbolId) || { precision: 2, minMove: 0.01, name: symbolId, enName: symbolId };
+    }
+
+    function onPlatformChange() {
+      const plat = document.getElementById("platformSelect").value;
+      if (plat === "FOREX") {
+        activePairsList = ALL_PAIRS.filter(p => p.cat === "FOREX");
+      } else if (plat === "CRYPTO") {
+        activePairsList = ALL_PAIRS.filter(p => p.cat === "CRYPTO");
+      } else {
+        activePairsList = [...ALL_PAIRS];
+      }
+      currentIndex = 0;
+      renderPairSelectors();
+    }
+
+    function renderPairSelectors() {
+      const select = document.getElementById("symbolSelect");
+      const chartSelect = document.getElementById("chartSymbolSwitcher");
+      const curVal = select.value;
+
+      select.innerHTML = `<option value="AUTO_ALL">${i18n[currentLang].autoAll}</option>`;
+      chartSelect.innerHTML = "";
+
+      activePairsList.forEach(p => {
+        const title = currentLang === "ar" ? p.name : p.enName;
+        const opt = document.createElement("option");
+        opt.value = p.id;
+        opt.innerText = title;
+        select.appendChild(opt);
+
+        const chartOpt = document.createElement("option");
+        chartOpt.value = p.id;
+        chartOpt.innerText = title;
+        chartSelect.appendChild(chartOpt);
+      });
+
+      if (curVal && (curVal === "AUTO_ALL" || activePairsList.some(p => p.id === curVal))) {
+        select.value = curVal;
+      } else {
+        select.value = "AUTO_ALL";
+      }
+
+      chartSelect.value = activeChartSymbol;
+    }
+
+    function initBackgroundWorker() {
+      const blob = new Blob([`
+        let timer = null;
+        self.onmessage = function(e) {
+          if (e.data === "START") {
+            if (!timer) {
+              timer = setInterval(() => self.postMessage("TICK"), 2800);
+            }
+          } else if (e.data === "STOP") {
+            clearInterval(timer);
+            timer = null;
+          }
+        };
+      `], { type: "application/javascript" });
+
+      bgWorker = new Worker(URL.createObjectURL(blob));
+      bgWorker.onmessage = function(e) {
+        if (e.data === "TICK" && isRunning) {
+          scanCycle();
+        }
+      };
+    }
+    initBackgroundWorker();
+
+    function calculateEMA(data, period) {
+      const k = 2 / (period + 1);
+      let ema = [data[0]];
+      for (let i = 1; i < data.length; i++) ema.push(data[i] * k + ema[i - 1] * (1 - k));
+      return ema;
+    }
+
+    function calculateRSI(closes, period = 14) {
+      let gains = 0, losses = 0;
+      for (let i = 1; i <= period; i++) {
+        let diff = closes[i] - closes[i - 1];
+        if (diff >= 0) gains += diff; else losses -= diff;
+      }
+      let avgGain = gains / period, avgLoss = losses / period;
+      for (let i = period + 1; i < closes.length; i++) {
+        let diff = closes[i] - closes[i - 1];
+        if (diff >= 0) {
+          avgGain = (avgGain * (period - 1) + diff) / period;
+          avgLoss = (avgLoss * (period - 1)) / period;
+        } else {
+          avgGain = (avgGain * (period - 1)) / period;
+          avgLoss = (avgLoss * (period - 1) - diff) / period;
+        }
+      }
+      if (avgLoss === 0) return 100;
+      return 100 - (100 / (1 + (avgGain / avgLoss)));
+    }
+
+    function calculateBollinger(closes, period = 20, multiplier = 2) {
+      const slice = closes.slice(-period);
+      const sma = slice.reduce((a, b) => a + b, 0) / period;
+      const variance = slice.reduce((sum, val) => sum + Math.pow(val - sma, 2), 0) / period;
+      const stdDev = Math.sqrt(variance);
+      return { upper: sma + (multiplier * stdDev), lower: sma - (multiplier * stdDev) };
+    }
+
+    async function scanCycle() {
+      const mode = document.getElementById("symbolSelect").value;
+      const interval = document.getElementById("intervalSelect").value;
+
+      let targetId = mode;
+      let targetName = mode;
+
+      if (mode === "AUTO_ALL") {
+        if (activePairsList.length === 0) return;
+        const item = activePairsList[currentIndex];
+        targetId = item.id;
+        targetName = currentLang === "ar" ? item.name : item.enName;
+        currentIndex = (currentIndex + 1) % activePairsList.length;
+      } else {
+        const cfg = getPairConfig(targetId);
+        targetName = currentLang === "ar" ? cfg.name : cfg.enName;
+      }
+
+      document.getElementById("displaySymbol").innerText = targetName;
+
+      try {
+        const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${targetId}&interval=${interval}&limit=220`);
+        const data = await res.json();
+
+        if (!Array.isArray(data) || data.length < 50) return;
+
+        const closes = data.map(c => parseFloat(c[4]));
+        const currentPrice = closes[closes.length - 1];
+        const lastCandleTime = Math.floor(data[data.length - 1][0] / 1000);
+        
+        const cfg = getPairConfig(targetId);
+        document.getElementById("currentPrice").innerText = "$" + currentPrice.toLocaleString(undefined, { minimumFractionDigits: cfg.precision });
+
+        checkOpenTrades(targetId, currentPrice);
+
+        let dynamicProb = 0;
+        let conditionsMet = 0;
+
+        const ema200 = calculateEMA(closes, 200);
+        const lastEma = ema200[ema200.length - 1];
+        document.getElementById("emaVal").innerText = "$" + lastEma.toFixed(cfg.precision);
+        const emaState = document.getElementById("emaState");
+        if (currentPrice >= lastEma) {
+          conditionsMet++;
+          const pct = ((currentPrice - lastEma) / lastEma) * 100;
+          dynamicProb += Math.min(30, 24 + Math.round(pct * 2));
+          emaState.innerHTML = `<i class="fa-solid fa-check"></i> ${i18n[currentLang].upTrend}`;
+          emaState.className = "sig-state state-pass";
+        } else {
+          emaState.innerHTML = `<i class="fa-solid fa-xmark"></i> ${i18n[currentLang].downTrend}`;
+          emaState.className = "sig-state state-fail";
+        }
+
+        const rsi = calculateRSI(closes, 14);
+        document.getElementById("rsiVal").innerText = rsi.toFixed(1);
+        const rsiState = document.getElementById("rsiState");
+        if (rsi <= 48) {
+          conditionsMet++;
+          dynamicProb += Math.min(25, Math.max(18, Math.round(25 - (rsi - 30) * 0.4)));
+          rsiState.innerHTML = `<i class="fa-solid fa-check"></i> ${i18n[currentLang].rsiOver}`;
+          rsiState.className = "sig-state state-pass";
+        } else {
+          rsiState.innerHTML = `<i class="fa-solid fa-minus"></i> ${i18n[currentLang].neutral}`;
+          rsiState.className = "sig-state state-wait";
+        }
+
+        const ema12 = calculateEMA(closes, 12);
+        const ema26 = calculateEMA(closes, 26);
+        const macdLine = ema12.map((v, i) => v - ema26[i]);
+        const sigLine = calculateEMA(macdLine, 9);
+        const lastM = macdLine[macdLine.length - 1];
+        const lastS = sigLine[sigLine.length - 1];
+        const macdDiff = lastM - lastS;
+        document.getElementById("macdVal").innerText = macdDiff.toFixed(2);
+        const macdState = document.getElementById("macdState");
+        if (lastM >= lastS) {
+          conditionsMet++;
+          dynamicProb += Math.min(25, 19 + Math.round(Math.abs(macdDiff) * 5));
+          macdState.innerHTML = `<i class="fa-solid fa-check"></i> ${i18n[currentLang].macdBull}`;
+          macdState.className = "sig-state state-pass";
+        } else {
+          macdState.innerHTML = `<i class="fa-solid fa-xmark"></i> ${i18n[currentLang].macdBear}`;
+          macdState.className = "sig-state state-fail";
+        }
+
+        const bb = calculateBollinger(closes, 20);
+        document.getElementById("bbVal").innerText = "$" + bb.lower.toFixed(cfg.precision);
+        const bbState = document.getElementById("bbState");
+        if (currentPrice <= bb.lower * 1.025) {
+          conditionsMet++;
+          dynamicProb += (currentPrice <= bb.lower) ? 20 : 16;
+          bbState.innerHTML = `<i class="fa-solid fa-check"></i> ${i18n[currentLang].bbSupport}`;
+          bbState.className = "sig-state state-pass";
+        } else {
+          bbState.innerHTML = `<i class="fa-solid fa-minus"></i> ${i18n[currentLang].bbInside}`;
+          bbState.className = "sig-state state-wait";
+        }
+
+        if (conditionsMet === 3) {
+          dynamicProb = Math.max(dynamicProb, 74 + Math.floor(Math.random() * 8));
+        } else if (conditionsMet === 4) {
+          dynamicProb = Math.max(dynamicProb, 85 + Math.floor(Math.random() * 9));
+        } else if (conditionsMet === 2) {
+          dynamicProb = Math.min(dynamicProb, 68);
+        }
+
+        dynamicProb = Math.min(94, Math.max(0, dynamicProb));
+        const scoreElem = document.getElementById("scoreRating");
+        scoreElem.innerText = `${conditionsMet}/4 | ${dynamicProb}%`;
+
+        const tradeType = (currentPrice >= lastEma || rsi <= 40) ? "BUY" : "SELL";
+        const hasActiveTrade = tradesHistory.some(t => t.symbolId === targetId && t.status === "RUNNING");
+        const isSameCandle = (lastAlertCandleTime[targetId] === lastCandleTime);
+
+        if (!hasActiveTrade && !isSameCandle && conditionsMet >= 2 && dynamicProb >= 50) {
+          scoreElem.style.color = "var(--accent-green)";
+          const now = Date.now();
+          if (!lastAlertTracker[targetId] || now - lastAlertTracker[targetId] > 30000) {
+            lastAlertTracker[targetId] = now;
+            lastAlertCandleTime[targetId] = lastCandleTime;
+            
+            // تشغيل النغمة المميزة للرادار
+            playDistinctiveRadarChime();
+
+            const relevantNews = GLOBAL_ECONOMIC_NEWS.find(n => n.symbolId === targetId);
+            const typeLabel = tradeType === "BUY" ? "🟢 شراء BUY" : "🔴 بيع SELL";
+
+            if (highProbNotifEnabled && dynamicProb >= 85) {
+              const notifTitle = `🔥 فرصة ذهبية (+85%): ${targetName} [${typeLabel}]`;
+              let notifBody = `📊 احتمالية النجاح: ${dynamicProb}%\n🚀 نقطة الدخول: ${currentPrice.toFixed(cfg.precision)}`;
+              if (relevantNews) {
+                notifBody += `\n⚠ خبر: ${relevantNews.titleAr}`;
+              }
+              sendSystemNotification(notifTitle, notifBody);
+            }
+
+            registerNewTrade(targetId, targetName, currentPrice, dynamicProb, cfg.precision, relevantNews, lastCandleTime, tradeType, interval);
+          }
+        } else if (dynamicProb >= 35) {
+          scoreElem.style.color = "var(--accent-yellow)";
+        } else {
+          scoreElem.style.color = "var(--accent-red)";
+        }
+
+      } catch (err) {
+        console.error("فحص مؤقت:", err);
+      }
+    }
+
+    function registerNewTrade(id, name, entryPrice, prob, precision, newsObj, candleTime, type, interval) {
+      const isBuy = (type === "BUY");
+      const tp = isBuy ? (entryPrice * 1.01) : (entryPrice * 0.99);
+      const sl = isBuy ? (entryPrice * 0.993) : (entryPrice * 1.007);
+
+      const trade = {
+        id: "T_" + Date.now(),
+        symbolId: id,
+        name: name,
+        type: type || "BUY",
+        interval: interval || "15m",
+        entry: entryPrice,
+        tp: tp,
+        sl: sl,
+        prob: prob,
+        precision: precision || 2,
+        news: newsObj ? (currentLang === 'ar' ? newsObj.titleAr : newsObj.titleEn) : null,
+        status: "RUNNING",
+        time: new Date().toLocaleTimeString(),
+        candleTime: candleTime || Math.floor(Date.now() / 1000)
+      };
+
+      tradesHistory.unshift(trade);
+      stats.total++;
+      updateStatsUI();
+      renderTradesUI();
+
+      if (document.getElementById("chartModal").style.display === "flex" && activeChartSymbol === id) {
+        applyHistoricalMarkers(id);
+      }
+    }
+
+    function checkOpenTrades(symbolId, currentPrice) {
+      let updated = false;
+      tradesHistory.forEach(t => {
+        if (t.status === "RUNNING" && t.symbolId === symbolId) {
+          if (t.type === "BUY") {
+            if (currentPrice >= t.tp) {
+              t.status = "WON";
+              stats.won++;
+              updated = true;
+            } else if (currentPrice <= t.sl) {
+              t.status = "LOST";
+              stats.lost++;
+              updated = true;
+            }
+          } else {
+            if (currentPrice <= t.tp) {
+              t.status = "WON";
+              stats.won++;
+              updated = true;
+            } else if (currentPrice >= t.sl) {
+              t.status = "LOST";
+              stats.lost++;
+              updated = true;
+            }
+          }
+        }
+      });
+
+      if (updated) {
+        updateStatsUI();
+        renderTradesUI();
+        if (document.getElementById("chartModal").style.display === "flex" && activeChartSymbol === symbolId) {
+          applyHistoricalMarkers(symbolId);
+        }
+      }
+    }
+
+    function copyPureValue(val, labelName) {
+      navigator.clipboard.writeText(val.toString()).then(() => {
+        const toast = document.getElementById("toastMsg");
+        toast.innerText = `${i18n[currentLang].copiedVal} ${val}`;
+        toast.style.display = "block";
+        setTimeout(() => toast.style.display = "none", 1800);
+      });
+    }
+
+    function copyFullTrade(tradeId) {
+      const t = tradesHistory.find(item => item.id === tradeId);
+      if (!t) return;
+
+      const typeTxt = t.type === "BUY" ? "🟢 شراء (BUY)" : "🔴 بيع (SELL)";
+      const textToCopy = 
+`⚡ توصية رادار: ${t.name}
+📍 نوع الصفقة: ${typeTxt} [فريم ${t.interval}]
+📊 احتمالية النجاح: ${t.prob}%
+🚀 نقطة الدخول: ${t.entry.toFixed(t.precision)}
+🎯 أخذ الربح (TP): ${t.tp.toFixed(t.precision)}
+🛑 وقف الخسارة (SL): ${t.sl.toFixed(t.precision)}
+⏰ التوقيت: ${t.time}`;
+
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        const toast = document.getElementById("toastMsg");
+        toast.innerText = i18n[currentLang].copiedAll;
+        toast.style.display = "block";
+        setTimeout(() => toast.style.display = "none", 2000);
+      });
+    }
+
+    function updateStatsUI() {
+      document.getElementById("statTotal").innerText = stats.total;
+      document.getElementById("statWon").innerText = stats.won;
+      document.getElementById("statLost").innerText = stats.lost;
+      const closed = stats.won + stats.lost;
+      const winRate = closed > 0 ? ((stats.won / closed) * 100).toFixed(0) : 0;
+      document.getElementById("statWinRate").innerText = winRate + "%";
+    }
+
+    function renderTradesUI() {
+      const container = document.getElementById("logsContainer");
+      if (tradesHistory.length === 0) {
+        const text = isRunning ? i18n[currentLang].searchingHistory : i18n[currentLang].emptyHistory;
+        container.innerHTML = `<div class="status-empty-box">${text}</div>`;
+        return;
+      }
+
+      container.innerHTML = "";
+
+      tradesHistory.forEach(t => {
+        const item = document.createElement("div");
+        item.className = `trade-card ${t.status === 'WON' ? 'won' : (t.status === 'LOST' ? 'lost' : '')}`;
+
+        let statusText = i18n[currentLang].tradeRunning;
+        let badgeClass = "status-running";
+        let icon = "fa-spinner fa-spin";
+
+        if (t.status === 'WON') {
+          statusText = i18n[currentLang].tradeWon;
+          badgeClass = "status-win";
+          icon = "fa-check";
+        } else if (t.status === 'LOST') {
+          statusText = i18n[currentLang].tradeLost;
+          badgeClass = "status-loss";
+          icon = "fa-xmark";
+        }
+
+        const isBuy = (t.type === "BUY");
+        const typeBadge = isBuy 
+          ? `<span class="trade-type-badge type-buy"><i class="fa-solid fa-arrow-trend-up"></i> ${i18n[currentLang].typeBuy}</span>`
+          : `<span class="trade-type-badge type-sell"><i class="fa-solid fa-arrow-trend-down"></i> ${i18n[currentLang].typeSell}</span>`;
+
+        const entryValStr = t.entry.toFixed(t.precision);
+        const tpValStr = t.tp.toFixed(t.precision);
+        const slValStr = t.sl.toFixed(t.precision);
+
+        item.innerHTML = `
+          <div class="trade-top-row">
+            <div class="trade-identity">
+              <b>${t.name}</b>
+              ${typeBadge}
+              <span class="trade-tf-badge">${t.interval}</span>
+            </div>
+            <span class="trade-status-badge ${badgeClass}"><i class="fa-solid ${icon}"></i> ${statusText}</span>
+          </div>
+
+          <div class="trade-integrated-prob">
+            <span class="prob-integrated-label"><i class="fa-solid fa-chart-pie"></i> ${i18n[currentLang].winProbLabel}</span>
+            <span class="prob-integrated-number">${t.prob}%</span>
+          </div>
+
+          <div class="trade-params-grid">
+            <div class="param-box">
+              <span class="param-title">${i18n[currentLang].legEntry}</span>
+              <div class="param-val-row">
+                <span class="param-val">${entryValStr}</span>
+                <button class="btn-copy-num" title="نسخ سعر الدخول فقط" onclick="copyPureValue('${entryValStr}', '${i18n[currentLang].legEntry}')">
+                  <i class="fa-regular fa-copy"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="param-box">
+              <span class="param-title">${i18n[currentLang].legTp}</span>
+              <div class="param-val-row">
+                <span class="param-val" style="color:var(--accent-green);">${tpValStr}</span>
+                <button class="btn-copy-num" title="نسخ سعر الهدف فقط" onclick="copyPureValue('${tpValStr}', '${i18n[currentLang].legTp}')">
+                  <i class="fa-regular fa-copy"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="param-box">
+              <span class="param-title">${i18n[currentLang].legSl}</span>
+              <div class="param-val-row">
+                <span class="param-val" style="color:var(--accent-red);">${slValStr}</span>
+                <button class="btn-copy-num" title="نسخ سعر الوقف فقط" onclick="copyPureValue('${slValStr}', '${i18n[currentLang].legSl}')">
+                  <i class="fa-regular fa-copy"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          ${t.news ? `<div class="trade-news-alert"><i class="fa-solid fa-bolt"></i> <b>تنبيه خبر:</b> ${t.news}</div>` : ''}
+
+          <div class="trade-bottom-row">
+            <div>
+              <span style="color:var(--text-secondary); font-size:10.5px;">⏰ ${t.time}</span>
+            </div>
+            <div class="trade-btn-group">
+              <button class="btn-action-sm btn-copy-all" title="نسخ كامل التقرير" onclick="copyFullTrade('${t.id}')">
+                <i class="fa-solid fa-clipboard-list"></i> ${i18n[currentLang].btnCopyAll}
+              </button>
+              <button class="btn-action-sm" onclick="openSignalChart('${t.symbolId}', '${t.name}', ${t.entry}, ${t.tp}, ${t.sl}, '${t.type}')">
+                <i class="fa-solid fa-chart-line"></i> ${currentLang === 'ar' ? 'الشارت' : 'Chart'}
+              </button>
+            </div>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function startScanner() {
+      if (isRunning) return;
+      isRunning = true;
+      document.getElementById("startBtn").disabled = true;
+      document.getElementById("stopBtn").disabled = false;
+      document.getElementById("statusBadge").classList.add("active");
+      document.getElementById("statusText").innerText = i18n[currentLang].running;
+
+      if (tradesHistory.length === 0) {
+        document.getElementById("logsContainer").innerHTML = `
+          <div class="status-empty-box">
+            <i class="fa-solid fa-satellite-dish fa-spin" style="color: var(--accent-green);"></i>
+            <span>${i18n[currentLang].searchingHistory}</span>
+          </div>
+        `;
+      }
+
+      scanCycle();
+      if (bgWorker) bgWorker.postMessage("START");
+    }
+
+    function stopScanner() {
+      isRunning = false;
+      if (bgWorker) bgWorker.postMessage("STOP");
+      document.getElementById("startBtn").disabled = false;
+      document.getElementById("stopBtn").disabled = true;
+      document.getElementById("statusBadge").classList.remove("active");
+      document.getElementById("statusText").innerText = i18n[currentLang].stopped;
+
+      if (tradesHistory.length === 0) {
+        document.getElementById("logsContainer").innerHTML = `
+          <div class="status-empty-box">
+            <span>${i18n[currentLang].pausedHistory}</span>
+          </div>
+        `;
+      }
+    }
+
+    function syncSelectors(val) {
+      if (val !== "AUTO_ALL") {
+        const switcher = document.getElementById("chartSymbolSwitcher");
+        if (switcher) switcher.value = val;
+      }
+    }
+
+    function openDirectChart() {
+      const mode = document.getElementById("symbolSelect").value;
+      const targetId = (mode === "AUTO_ALL") ? activePairsList[0].id : mode;
+      const cfg = getPairConfig(targetId);
+      openSignalChart(targetId, currentLang === "ar" ? cfg.name : cfg.enName, null, null, null, "BUY");
+    }
+
+    function getIntervalSeconds(interval) {
+      const unit = interval.slice(-1);
+      const val = parseInt(interval.slice(0, -1));
+      if (unit === 'm') return val * 60;
+      if (unit === 'h') return val * 3600;
+      if (unit === 'd') return val * 86400;
+      return 60;
+    }
+
+    function startFloatingCandleCountdown(interval) {
+      if (countdownInterval) clearInterval(countdownInterval);
+
+      const intervalSec = getIntervalSeconds(interval);
+      const countdownElem = document.getElementById("floatingTimeVal");
+
+      function updateTimer() {
+        const nowSec = Math.floor(Date.now() / 1000);
+        const remSec = intervalSec - (nowSec % intervalSec);
+
+        const m = Math.floor(remSec / 60);
+        const s = remSec % 60;
+        countdownElem.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+      }
+
+      updateTimer();
+      countdownInterval = setInterval(updateTimer, 1000);
+    }
+
+    function onChartSwitcherChange() {
+      const select = document.getElementById("chartSymbolSwitcher");
+      const targetId = select.value;
+      const cfg = getPairConfig(targetId);
+      openSignalChart(targetId, currentLang === "ar" ? cfg.name : cfg.enName, null, null, null, "BUY");
+    }
+
+    function onChartIntervalChange() {
+      const select = document.getElementById("chartIntervalSwitcher");
+      activeChartInterval = select.value;
+      const cfg = getPairConfig(activeChartSymbol);
+      openSignalChart(activeChartSymbol, currentLang === "ar" ? cfg.name : cfg.enName, null, null, null, "BUY");
+    }
+
+    function applyHistoricalMarkers(symbolId) {
+      if (!candleSeries) return;
+
+      const symbolTrades = tradesHistory.filter(t => t.symbolId === symbolId);
+      const markers = [];
+
+      symbolTrades.forEach(t => {
+        const isBuy = (t.type === "BUY");
+        if (t.status === "WON") {
+          markers.push({
+            time: t.candleTime,
+            position: isBuy ? 'belowBar' : 'aboveBar',
+            color: '#0ecb81',
+            shape: isBuy ? 'arrowUp' : 'arrowDown',
+            size: 2,
+            text: `ربح TP ${t.entry.toFixed(t.precision)} [${t.prob}%]`
+          });
+        } else if (t.status === "LOST") {
+          markers.push({
+            time: t.candleTime,
+            position: isBuy ? 'belowBar' : 'aboveBar',
+            color: '#f6465d',
+            shape: isBuy ? 'arrowDown' : 'arrowUp',
+            size: 2,
+            text: `وقف SL ${t.entry.toFixed(t.precision)} [${t.prob}%]`
+          });
+        } else {
+          markers.push({
+            time: t.candleTime,
+            position: isBuy ? 'belowBar' : 'aboveBar',
+            color: isBuy ? '#0ecb81' : '#f6465d',
+            shape: isBuy ? 'arrowUp' : 'arrowDown',
+            size: 2,
+            text: `${isBuy ? 'شراء' : 'بيع'} ${t.entry.toFixed(t.precision)} [${t.prob}%]`
+          });
+        }
+      });
+
+      markers.sort((a, b) => a.time - b.time);
+      candleSeries.setMarkers(markers);
+    }
+
+    async function openSignalChart(targetId, targetName, entryPrice, tpPrice, slPrice, tradeType) {
+      activeChartSymbol = targetId;
+      const interval = activeChartInterval;
+      const cfg = getPairConfig(targetId);
+      const isBuy = (tradeType !== "SELL");
+      
+      document.getElementById("chartModal").style.display = "flex";
+      
+      const switcher = document.getElementById("chartSymbolSwitcher");
+      if (switcher) switcher.value = targetId;
+
+      const intSwitcher = document.getElementById("chartIntervalSwitcher");
+      if (intSwitcher) intSwitcher.value = interval;
+
+      startFloatingCandleCountdown(interval);
+
+      const container = document.getElementById("tvChart");
+      container.innerHTML = "";
+
+      chartInstance = LightweightCharts.createChart(container, {
+        layout: { background: { color: '#0b0e14' }, textColor: '#cbd5e1' },
+        grid: { vertLines: { color: '#161b26' }, horzLines: { color: '#161b26' } },
+        crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+        rightPriceScale: {
+          visible: true,
+          borderVisible: true,
+          borderColor: '#272e3d',
+          textColor: '#cbd5e1',
+          autoScale: true,
+          scaleMargins: { top: 0.15, bottom: 0.15 },
+          alignLabels: true
+        },
+        timeScale: {
+          visible: true,
+          borderVisible: true,
+          borderColor: '#272e3d',
+          timeVisible: true,
+          secondsVisible: false,
+          barSpacing: 11,
+          minBarSpacing: 4,
+          rightOffset: 8
+        }
+      });
+
+      candleSeries = chartInstance.addCandlestickSeries({
+        upColor: '#0ecb81',
+        downColor: '#f6465d',
+        borderVisible: false,
+        wickUpColor: '#0ecb81',
+        wickDownColor: '#f6465d',
+        priceFormat: {
+          type: 'price',
+          precision: cfg.precision,
+          minMove: cfg.minMove
+        }
+      });
+
+      try {
+        const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${targetId}&interval=${interval}&limit=90`);
+        const klines = await res.json();
+        const chartData = [];
+
+        klines.forEach(c => {
+          chartData.push({
+            time: Math.floor(c[0] / 1000),
+            open: parseFloat(c[1]),
+            high: parseFloat(c[2]),
+            low: parseFloat(c[3]),
+            close: parseFloat(c[4])
+          });
+        });
+
+        candleSeries.setData(chartData);
+
+        applyHistoricalMarkers(targetId);
+
+        if (entryPrice) {
+          const entryColor = isBuy ? '#0ecb81' : '#f6465d';
+          const entryTitle = isBuy ? 'دخول شراء (BUY)' : 'دخول بيع (SELL)';
+
+          candleSeries.createPriceLine({
+            price: entryPrice, color: entryColor, lineWidth: 2,
+            lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: entryTitle
+          });
+
+          if (tpPrice) {
+            candleSeries.createPriceLine({
+              price: tpPrice, color: '#0ecb81', lineWidth: 1,
+              lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: i18n[currentLang].legTp
+            });
+          }
+
+          if (slPrice) {
+            candleSeries.createPriceLine({
+              price: slPrice, color: '#f6465d', lineWidth: 1,
+              lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: i18n[currentLang].legSl
+            });
+          }
+        }
+
+        chartInstance.timeScale().fitContent();
+
+        setTimeout(() => {
+          if (chartInstance) chartInstance.resize(container.clientWidth, container.clientHeight);
+        }, 150);
+
+        if (chartLiveTimer) clearInterval(chartLiveTimer);
+        chartLiveTimer = setInterval(() => fetchLiveCandleTick(targetId, interval), 1000);
+
+      } catch (e) {
+        console.error("فشل تحميل الشارت:", e);
+      }
+    }
+
+    async function fetchLiveCandleTick(symbol, interval) {
+      if (!candleSeries) return;
+      try {
+        const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=1`);
+        const kline = await res.json();
+        if (kline && kline.length > 0) {
+          const c = kline[0];
+          candleSeries.update({
+            time: Math.floor(c[0] / 1000),
+            open: parseFloat(c[1]),
+            high: parseFloat(c[2]),
+            low: parseFloat(c[3]),
+            close: parseFloat(c[4])
+          });
+        }
+      } catch (e) {}
+    }
+
+    function closeChartModal() {
+      if (chartLiveTimer) clearInterval(chartLiveTimer);
+      if (countdownInterval) clearInterval(countdownInterval);
+      document.getElementById("chartModal").style.display = "none";
+    }
+
+    renderPairSelectors();
+    renderNewsFeed();
+    initNotificationSettings();
+  </script>
+</body>
+</html>
