@@ -374,12 +374,10 @@
           <i class="fa-solid fa-sliders"></i> <span data-i18n="sensitivityLabel">حساسية الرادار (الحد الأدنى للتوافق):</span>
         </label>
         <select id="radarSensitivity" style="background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-primary); padding: 8px 10px; border-radius: 8px; font-size: 11.5px; outline: none; font-weight: 700;" onchange="updateRadarSensitivity(this.value)">
-          <option value="60" data-i18n="sens60">60% (تشغيل موسع - صفقات أكثر)</option>
-          <option value="65">65%</option>
-          <option value="70" data-i18n="sens70">70% (متوازن)</option>
-          <option value="75">75%</option>
+          <option value="75" selected data-i18n="sens75">75% (قوي وموثوق)</option>
           <option value="80">80%</option>
-          <option value="85" selected data-i18n="sens85">85% (صارم وقوي)</option>
+          <option value="85" data-i18n="sens85">85% (صارم وعالي الدقة)</option>
+          <option value="90">90%</option>
         </select>
       </div>
 
@@ -529,25 +527,18 @@
         </select>
       </div>
 
-      <div class="input-group">
-        <label><i class="fa-regular fa-clock"></i> <span data-i18n="timeframeLabel">فريم الرادار الرئيسي</span></label>
+      <div class="input-group full-width">
+        <label><i class="fa-regular fa-clock"></i> <span data-i18n="timeframeLabel">فريم الرادار الرئيسي (بدءاً من 15 دقيقة)</span></label>
         <select id="intervalSelect" onchange="saveAppConfig()">
-          <optgroup label="مضاربة وسكالبينج" data-i18n-group="scalpGroup">
-            <option value="1m" data-i18n="m1">1 دقيقة (1m)</option>
-            <option value="3m" data-i18n="m3">3 دقائق (3m)</option>
-            <option value="5m" data-i18n="m5">5 دقائق (5m)</option>
-            <option value="15m" selected data-i18n="m15">15 دقيقة (15m)</option>
-            <option value="30m" data-i18n="m30">30 دقيقة (30m)</option>
-          </optgroup>
-          <optgroup label="يومي وسوينغ" data-i18n-group="swingGroup">
-            <option value="1h" data-i18n="h1">1 ساعة (1h)</option>
-            <option value="4h" data-i18n="h4">4 ساعات (4h)</option>
-            <option value="1d" data-i18n="d1">1 يوم (1d)</option>
-          </optgroup>
+          <option value="15m" selected data-i18n="m15">15 دقيقة (15m) - الموصى به ⚖️</option>
+          <option value="30m" data-i18n="m30">30 دقيقة (30m)</option>
+          <option value="1h" data-i18n="h1">1 ساعة (1h) - قوي جداً 🎯</option>
+          <option value="4h" data-i18n="h4">4 ساعات (4h) - سوينغ 🚀</option>
+          <option value="1d" data-i18n="d1">1 يوم (1d)</option>
         </select>
       </div>
 
-      <div class="input-group">
+      <div class="input-group full-width">
         <label><i class="fa-solid fa-chart-area"></i> <span data-i18n="chartHeader">الشارت العام</span></label>
         <button class="main-btn btn-chart" type="button" onclick="openDirectChart()">
           <i class="fa-solid fa-chart-line"></i> <span data-i18n="btnOpenChart">فتح الشارت 📊</span>
@@ -582,9 +573,6 @@
           <span id="chartFixedSymbolBadge" class="chart-fixed-title" style="display: none;"></span>
 
           <select id="chartIntervalSwitcher" class="chart-select-elem" onchange="onChartIntervalChange()">
-            <option value="1m">1m</option>
-            <option value="3m">3m</option>
-            <option value="5m">5m</option>
             <option value="15m" selected>15m</option>
             <option value="30m">30m</option>
             <option value="1h">1h</option>
@@ -618,7 +606,7 @@
     let isMuted = false;
     let currentTheme = localStorage.getItem("alphaRadarTheme") || "dark";
     
-    let radarMinSensitivity = parseInt(localStorage.getItem("radarMinSensitivity")) || 60;
+    let radarMinSensitivity = parseInt(localStorage.getItem("radarMinSensitivity")) || 75;
 
     let metaApiToken = localStorage.getItem("metaApiToken") || "";
     let metaApiAccountId = localStorage.getItem("metaApiAccountId") || "";
@@ -632,9 +620,8 @@
       ar: {
         appSub: "رادار التوافق الفني وتتبع الصفقات اللحظي",
         sensitivityLabel: "حساسية الرادار (الحد الأدنى للتوافق):",
-        sens60: "60% (تشغيل موسع - صفقات أكثر)",
-        sens70: "70% (متوازن)",
-        sens85: "85% (صارم وقوي)",
+        sens75: "75% (قوي وموثوق)",
+        sens85: "85% (صارم وعالي الدقة)",
         resetBtnText: "تصفير البيانات والعدادات والبدء من الصفر 🔄",
         metaApiTitle: "الربط السحابي المباشر (MetaTrader / MetaApi)",
         tokenLabel: "MetaApi API Token (الرمز السحابي):",
@@ -665,16 +652,11 @@
         rr2: "1:2 — هدف ضعف الوقف (سوينغ آمن) 🎯",
         rr3: "1:3 — هدف 3 أضعاف الوقف (اقتناص راليات) 🚀",
         autoAll: "⚡ رادار شامل: فحص كل الأزواج بالتناوب",
-        timeframeLabel: "فريم الرادار الرئيسي",
-        scalpGroup: "مضاربة وسكالبينج",
-        swingGroup: "يومي وسوينغ",
-        m1: "1 دقيقة (1m)",
-        m3: "3 دقائق (3m)",
-        m5: "5 دقائق (5m)",
-        m15: "15 دقيقة (15m)",
+        timeframeLabel: "فريم الرادار الرئيسي (بدءاً من 15 دقيقة)",
+        m15: "15 دقيقة (15m) - الموصى به ⚖️",
         m30: "30 دقيقة (30m)",
-        h1: "1 ساعة (1h)",
-        h4: "4 ساعات (4h)",
+        h1: "1 ساعة (1h) - قوي جداً 🎯",
+        h4: "4 ساعات (4h) - سوينغ 🚀",
         d1: "1 يوم (1d)",
         chartHeader: "الشارت العام",
         btnOpenChart: "فتح الشارت 📊",
@@ -721,9 +703,8 @@
       en: {
         appSub: "Multi-Strategy Confluence, News & Signal Radar",
         sensitivityLabel: "Radar Sensitivity (Min Confluence):",
-        sens60: "60% (Extended Scan - More Trades)",
-        sens70: "70% (Balanced)",
-        sens85: "85% (Strict & Strong)",
+        sens75: "75% (Strong & Reliable)",
+        sens85: "85% (Strict & High Accuracy)",
         resetBtnText: "Reset Data & Counters (Start from Scratch) 🔄",
         metaApiTitle: "Live Cloud Link (MetaTrader / MetaApi)",
         tokenLabel: "MetaApi API Token:",
@@ -754,16 +735,11 @@
         rr2: "1:2 — Double TP (Safe Swing) 🎯",
         rr3: "1:3 — Triple TP (Rally Hunter) 🚀",
         autoAll: "⚡ All Pairs Radar: Auto Scan Available Markets",
-        timeframeLabel: "Main Radar Timeframe",
-        scalpGroup: "Scalping & Day Trading",
-        swingGroup: "Swing & Daily",
-        m1: "1 Minute (1m)",
-        m3: "3 Minutes (3m)",
-        m5: "5 Minutes (5m)",
-        m15: "15 Minutes (15m)",
+        timeframeLabel: "Main Radar Timeframe (From 15m)",
+        m15: "15 Minutes (15m) - Recommended ⚖️",
         m30: "30 Minutes (30m)",
-        h1: "1 Hour (1h)",
-        h4: "4 Hours (4h)",
+        h1: "1 Hour (1h) - Strong 🎯",
+        h4: "4 Hours (4h) - Swing 🚀",
         d1: "1 Day (1d)",
         chartHeader: "Live Chart",
         btnOpenChart: "Open Chart 📊",
@@ -832,7 +808,7 @@
     }
 
     function updateRadarSensitivity(val) {
-      radarMinSensitivity = parseInt(val) || 60;
+      radarMinSensitivity = parseInt(val) || 75;
       try { localStorage.setItem("radarMinSensitivity", radarMinSensitivity); } catch(e){}
       showToast(currentLang === 'ar' ? `⚡ تم ضبط حساسية الرادار لتلتقط الصفقات من ${radarMinSensitivity}% فما فوق` : `⚡ Radar sensitivity set to ${radarMinSensitivity}% and above`);
     }
@@ -1458,7 +1434,7 @@
       try {
         const cfg = getPairConfig(targetId);
         let fetchSymbol = cfg.proxy || targetId;
-        if (targetId === "USDJPY") fetchSymbol = "GBPUSDT"; // استخدام زوج بديل للين في بينانس مع تعديل النطاق السعري
+        if (targetId === "USDJPY") fetchSymbol = "GBPUSDT";
 
         const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${fetchSymbol}&interval=${interval}&limit=220`);
         
@@ -1471,7 +1447,6 @@
         let highs = data.map(c => parseFloat(c[2]));
         let lows = data.map(c => parseFloat(c[3]));
 
-        // تصحيح النطاق والسعر إذا كان الزوج USDJPY ليطابق السعر الحقيقي في السوق (نطاق 150)
         if (targetId === "USDJPY") {
           const scaleFactor = 152.5 / closes[closes.length - 1];
           closes = closes.map(v => v * scaleFactor);
@@ -1601,6 +1576,7 @@
         tp1 = entryPrice + (dist * rrRatio);
         tp2 = entryPrice + (dist * rrRatio * 1.5);
       } else {
+        // التصحيح النهائي والقاطع لصفقة البيع: الوقف فوق الدخول والهدف تحته بدقة
         sl = entryPrice + dist;
         tp1 = entryPrice - (dist * rrRatio);
         tp2 = entryPrice - (dist * rrRatio * 1.5);
@@ -1662,6 +1638,7 @@
               updated = true;
             }
           } else {
+            // التحقق الدقيق لصفقات البيع
             if (currentLow <= targetTp) {
               t.status = "WON";
               stats.won++;
@@ -1912,7 +1889,7 @@
       if (unit === 'm') return val * 60;
       if (unit === 'h') return val * 3600;
       if (unit === 'd') return val * 86400;
-      return 60;
+      return 900;
     }
 
     function startFloatingCandleCountdown(interval) {
