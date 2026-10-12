@@ -402,20 +402,20 @@
     <div class="notif-toggle-card" style="flex-direction: column; align-items: stretch; gap: 10px;">
       <div style="display: flex; flex-direction: column; gap: 5px;">
         <label for="radarSensitivity" style="font-size: 11.5px; font-weight: 700; color: var(--text-primary);">
-          <i class="fa-solid fa-sliders"></i> حساسية الرادار (الحد الأدنى للتوافق):
+          <i class="fa-solid fa-sliders"></i> <span data-i18n="sensitivityLabel">حساسية الرادار (الحد الأدنى للتوافق):</span>
         </label>
         <select id="radarSensitivity" style="background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-primary); padding: 8px 10px; border-radius: 8px; font-size: 11.5px; outline: none; font-weight: 700;" onchange="updateRadarSensitivity(this.value)">
-          <option value="60">60% (تشغيل موسع - صفقات أكثر)</option>
+          <option value="60" data-i18n="sens60">60% (تشغيل موسع - صفقات أكثر)</option>
           <option value="65">65%</option>
-          <option value="70">70% (متوازن)</option>
+          <option value="70" data-i18n="sens70">70% (متوازن)</option>
           <option value="75">75%</option>
           <option value="80">80%</option>
-          <option value="85" selected>85% (صارم وقوي)</option>
+          <option value="85" selected data-i18n="sens85">85% (صارم وقوي)</option>
         </select>
       </div>
 
       <button onclick="resetRadarDataAndCounters()" style="width: 100%; padding: 9px; background: rgba(246, 70, 93, 0.15); color: var(--accent-red); border: 1px solid rgba(246, 70, 93, 0.3); border-radius: 8px; font-weight: 800; font-size: 11.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
-        <i class="fa-solid fa-rotate-right"></i> تصفير البيانات والعدادات والبدء من الصفر 🔄
+        <i class="fa-solid fa-rotate-right"></i> <span data-i18n="resetBtnText">تصفير البيانات والعدادات والبدء من الصفر 🔄</span>
       </button>
     </div>
 
@@ -423,7 +423,7 @@
       <div class="metaapi-header" onclick="toggleMetaApiAccordion()">
         <div class="metaapi-title">
           <i class="fa-solid fa-cloud-bolt"></i>
-          <span>الربط السحابي المباشر (MetaTrader / MetaApi)</span>
+          <span data-i18n="metaApiTitle">الربط السحابي المباشر (MetaTrader / MetaApi)</span>
           <i class="fa-solid fa-chevron-down" id="metaApiChevron" style="font-size: 11px; margin-right: 4px; transition: transform 0.3s;"></i>
         </div>
         <div style="display: flex; align-items: center; gap: 8px;" onclick="event.stopPropagation();">
@@ -438,23 +438,23 @@
       <div class="metaapi-collapse-body" id="metaApiBody">
         <div class="metaapi-inputs">
           <div class="metaapi-field">
-            <label><i class="fa-solid fa-key"></i> MetaApi API Token (الرمز السحابي):</label>
+            <label><i class="fa-solid fa-key"></i> <span data-i18n="tokenLabel">MetaApi API Token (الرمز السحابي):</span></label>
             <input type="password" id="metaApiToken" class="metaapi-input" placeholder="ألصق الـ Token هنا..." onfocus="removeInputGlow(this)">
           </div>
           
           <div class="metaapi-row">
             <div class="metaapi-field">
-              <label><i class="fa-solid fa-id-card"></i> Account ID (معرّف الحساب في MetaApi):</label>
+              <label><i class="fa-solid fa-id-card"></i> <span data-i18n="accountIdLabel">Account ID (معرّف الحساب):</span></label>
               <input type="text" id="metaApiAccountId" class="metaapi-input" placeholder="مثال: 94a1b8..." onfocus="removeInputGlow(this)">
             </div>
             <div class="metaapi-field">
-              <label><i class="fa-solid fa-cubes-stacked"></i> حجم اللوت (Lot):</label>
+              <label><i class="fa-solid fa-cubes-stacked"></i> <span data-i18n="lotLabel">حجم اللوت (Lot):</span></label>
               <input type="number" step="0.01" min="0.01" id="metaApiLot" class="metaapi-input" value="0.01" onfocus="removeInputGlow(this)">
             </div>
           </div>
 
           <button class="btn-save-metaapi" id="saveMetaApiBtn" onclick="saveMetaApiCredentials(true)">
-            <i class="fa-solid fa-floppy-disk"></i> <span id="btnSaveText">حفظ إعدادات حساب التداول واختبار الاتصال 🔗</span>
+            <i class="fa-solid fa-floppy-disk"></i> <span id="btnSaveText" data-i18n="saveMetaBtn">حفظ إعدادات حساب التداول واختبار الاتصال 🔗</span>
           </button>
 
           <div id="metaApiConnectionStatus" class="metaapi-status-bar mt-status-pending" style="display: none;">
@@ -563,17 +563,17 @@
       <div class="input-group">
         <label><i class="fa-regular fa-clock"></i> <span data-i18n="timeframeLabel">فريم الرادار الرئيسي</span></label>
         <select id="intervalSelect" onchange="saveAppConfig()">
-          <optgroup label="مضاربة وسكالبينج">
-            <option value="1m">1 دقيقة (1m)</option>
-            <option value="3m">3 دقائق (3m)</option>
-            <option value="5m">5 دقائق (5m)</option>
-            <option value="15m" selected>15 دقيقة (15m)</option>
-            <option value="30m">30 دقيقة (30m)</option>
+          <optgroup label="مضاربة وسكالبينج" data-i18n-group="scalpGroup">
+            <option value="1m" data-i18n="m1">1 دقيقة (1m)</option>
+            <option value="3m" data-i18n="m3">3 دقائق (3m)</option>
+            <option value="5m" data-i18n="m5">5 دقائق (5m)</option>
+            <option value="15m" selected data-i18n="m15">15 دقيقة (15m)</option>
+            <option value="30m" data-i18n="m30">30 دقيقة (30m)</option>
           </optgroup>
-          <optgroup label="يومي وسوينغ">
-            <option value="1h">1 ساعة (1h)</option>
-            <option value="4h">4 ساعات (4h)</option>
-            <option value="1d">1 يوم (1d)</option>
+          <optgroup label="يومي وسوينغ" data-i18n-group="swingGroup">
+            <option value="1h" data-i18n="h1">1 ساعة (1h)</option>
+            <option value="4h" data-i18n="h4">4 ساعات (4h)</option>
+            <option value="1d" data-i18n="d1">1 يوم (1d)</option>
           </optgroup>
         </select>
       </div>
@@ -629,10 +629,10 @@
       </div>
 
       <div class="chart-legend">
-        <span><b style="color: var(--accent-green);">ــــ نقطة الدخول (شراء BUY)</b></span>
-        <span><b style="color: var(--accent-red);">ــــ نقطة الدخول (بيع SELL)</b></span>
-        <span><b style="color: var(--accent-green);">---- الهدف (TP1 & TP2)</b></span>
-        <span><b style="color: var(--accent-red);">---- الوقف (SL)</b></span>
+        <span><b style="color: var(--accent-green);">ــــ <span data-i18n="legendBuy">نقطة الدخول (شراء BUY)</span></b></span>
+        <span><b style="color: var(--accent-red);">ــــ <span data-i18n="legendSell">نقطة الدخول (بيع SELL)</span></b></span>
+        <span><b style="color: var(--accent-green);">---- <span data-i18n="legendTp">الهدف (TP1 & TP2)</span></b></span>
+        <span><b style="color: var(--accent-red);">---- <span data-i18n="legendSl">الوقف (SL)</span></b></span>
       </div>
 
       <div class="chart-container-box">
@@ -665,6 +665,16 @@
         appSub: "رادار التوافق الفني وتتبع الصفقات اللحظي",
         notifTitle: "إشعارات الصفقات القوية",
         notifDesc: "إرسال إشعار فوري وتنبيه صوتي واهتزاز",
+        sensitivityLabel: "حساسية الرادار (الحد الأدنى للتوافق):",
+        sens60: "60% (تشغيل موسع - صفقات أكثر)",
+        sens70: "70% (متوازن)",
+        sens85: "85% (صارم وقوي)",
+        resetBtnText: "تصفير البيانات والعدادات والبدء من الصفر 🔄",
+        metaApiTitle: "الربط السحابي المباشر (MetaTrader / MetaApi)",
+        tokenLabel: "MetaApi API Token (الرمز السحابي):",
+        accountIdLabel: "Account ID (معرّف الحساب):",
+        lotLabel: "حجم اللوت (Lot):",
+        saveMetaBtn: "حفظ إعدادات حساب التداول واختبار الاتصال 🔗",
         stopped: "متوقف",
         running: "الرادار يعمل...",
         trades: "الصفقات",
@@ -679,6 +689,9 @@
         neutral: "محايد",
         scoreTitle: "التوافق & احتمالية النجاح:",
         platformLabel: "بيئة المنصة ومزود الأسعار:",
+        platAll: "🌐 رادار شامل لكل الأسواق (Global Multi-Asset)",
+        platForex: "📊 الفوركس والمعادن والذهب (FX & Metals)",
+        platCrypto: "🪙 العملات الرقمية الكبرى (Binance Engine)",
         symbolLabel: "وضع المراقبة واختيار الزوج:",
         rrLabel: "إدارة المخاطرة والعائد (Risk : Reward):",
         rr1: "1:1 — سكالبينج سريع ومباشر ⚡",
@@ -687,6 +700,16 @@
         rr3: "1:3 — هدف 3 أضعاف الوقف (اقتناص راليات) 🚀",
         autoAll: "⚡ رادار شامل: فحص كل الأزواج بالتناوب",
         timeframeLabel: "فريم الرادار الرئيسي",
+        scalpGroup: "مضاربة وسكالبينج",
+        swingGroup: "يومي وسوينغ",
+        m1: "1 دقيقة (1m)",
+        m3: "3 دقائق (3m)",
+        m5: "5 دقائق (5m)",
+        m15: "15 دقيقة (15m)",
+        m30: "30 دقيقة (30m)",
+        h1: "1 ساعة (1h)",
+        h4: "4 ساعات (4h)",
+        d1: "1 يوم (1d)",
         chartHeader: "الشارت العام",
         btnOpenChart: "فتح الشارت 📊",
         btnStart: "بدء رصد الصفقات",
@@ -723,12 +746,26 @@
         timeUntilNews: "الوقت حتى يصل الخبر:",
         earlyHint: "⚡ رصد استباقي مبكر: علّق أمر دخول مع الارتداد",
         netOffline: "⚠️ يتعذر الاتصال بالإنترنت - يرجى التحقق من الشبكة",
-        netOnline: "✅ تمت استعادة الاتصال بالإنترنت بنجاح!"
+        netOnline: "✅ تمت استعادة الاتصال بالإنترنت بنجاح!",
+        legendBuy: "نقطة الدخول (شراء BUY)",
+        legendSell: "نقطة الدخول (بيع SELL)",
+        legendTp: "الهدف (TP1 & TP2)",
+        legendSl: "الوقف (SL)"
       },
       en: {
         appSub: "Multi-Strategy Confluence, News & Signal Radar",
         notifTitle: "High Probability Alerts",
         notifDesc: "Send push notification with sound & vibration",
+        sensitivityLabel: "Radar Sensitivity (Min Confluence):",
+        sens60: "60% (Extended Scan - More Trades)",
+        sens70: "70% (Balanced)",
+        sens85: "85% (Strict & Strong)",
+        resetBtnText: "Reset Data & Counters (Start from Scratch) 🔄",
+        metaApiTitle: "Live Cloud Link (MetaTrader / MetaApi)",
+        tokenLabel: "MetaApi API Token:",
+        accountIdLabel: "Account ID:",
+        lotLabel: "Lot Size:",
+        saveMetaBtn: "Save Account Settings & Test Connection 🔗",
         stopped: "Stopped",
         running: "Radar Active...",
         trades: "Trades",
@@ -743,6 +780,9 @@
         neutral: "Neutral",
         scoreTitle: "Score & Win Probability:",
         platformLabel: "Platform Environment & Feed:",
+        platAll: "🌐 Global Multi-Asset (All Markets)",
+        platForex: "📊 FX & Metals Style (Gold & Forex)",
+        platCrypto: "🪙 Binance Engine (Top Cryptos)",
         symbolLabel: "Monitor Mode & Pair Selection:",
         rrLabel: "Risk to Reward Ratio (R:R):",
         rr1: "1:1 — Quick Scalp ⚡",
@@ -751,6 +791,16 @@
         rr3: "1:3 — Triple TP (Rally Hunter) 🚀",
         autoAll: "⚡ All Pairs Radar: Auto Scan Available Markets",
         timeframeLabel: "Main Radar Timeframe",
+        scalpGroup: "Scalping & Day Trading",
+        swingGroup: "Swing & Daily",
+        m1: "1 Minute (1m)",
+        m3: "3 Minutes (3m)",
+        m5: "5 Minutes (5m)",
+        m15: "15 Minutes (15m)",
+        m30: "30 Minutes (30m)",
+        h1: "1 Hour (1h)",
+        h4: "4 Hours (4h)",
+        d1: "1 Day (1d)",
         chartHeader: "Live Chart",
         btnOpenChart: "Open Chart 📊",
         btnStart: "Start Radar Scanner",
@@ -787,18 +837,23 @@
         timeUntilNews: "Time until news:",
         earlyHint: "⚡ Early Trigger: Place a limit order on pullback",
         netOffline: "⚠️ No Internet Connection - Please check your network",
-        netOnline: "✅ Internet connection restored successfully!"
+        netOnline: "✅ Internet connection restored successfully!",
+        legendBuy: "Entry (BUY)",
+        legendSell: "Entry (SELL)",
+        legendTp: "Take Profit (TP1 & TP2)",
+        legendSl: "Stop Loss (SL)"
       }
     };
 
     function updateRadarSensitivity(val) {
       radarMinSensitivity = parseInt(val) || 60;
       try { localStorage.setItem("radarMinSensitivity", radarMinSensitivity); } catch(e){}
-      showToast(`⚡ تم ضبط حساسية الرادار لتلتقط الصفقات من ${radarMinSensitivity}% فما فوق`);
+      showToast(currentLang === 'ar' ? `⚡ تم ضبط حساسية الرادار لتلتقط الصفقات من ${radarMinSensitivity}% فما فوق` : `⚡ Radar sensitivity set to ${radarMinSensitivity}% and above`);
     }
 
     function resetRadarDataAndCounters() {
-      if (confirm("هل أنت متأكد من رغبتك في تصفير العدادات ومسح جميع الصفقات والبدء من الصفر؟")) {
+      const msg = currentLang === 'ar' ? "هل أنت متأكد من رغبتك في تصفير العدادات ومسح جميع الصفقات والبدء من الصفر؟" : "Are you sure you want to reset all counters and trades and start from scratch?";
+      if (confirm(msg)) {
         tradesHistory = [];
         stats = { total: 0, won: 0, lost: 0 };
         try {
@@ -807,7 +862,7 @@
         } catch(e){}
         updateStatsUI();
         renderTradesUI();
-        showToast("🔄 تم تصفير كافة العدادات والصفقات بنجاح!");
+        showToast(currentLang === 'ar' ? "🔄 تم تصفير كافة العدادات والصفقات بنجاح!" : "🔄 All counters and trades reset successfully!");
       }
     }
 
@@ -978,7 +1033,7 @@
 
     function updateTradingModeBadge() {
       const badge = document.getElementById("mtTradingModeBadge");
-      if (badge) badge.innerText = `تداول آلي (+${radarMinSensitivity}%)`;
+      if (badge) badge.innerText = currentLang === 'ar' ? `تداول آلي (+${radarMinSensitivity}%)` : `Auto Trade (+${radarMinSensitivity}%)`;
     }
 
     function toggleHighProbNotifications(val) {
@@ -987,12 +1042,12 @@
       if (val && "Notification" in window && Notification.permission !== "granted") {
         Notification.requestPermission();
       }
-      showToast(val ? "تم تفعيل إشعارات الصفقات القوية" : "تم إيقاف إشعارات الصفقات القوية");
+      showToast(val ? (currentLang === 'ar' ? "تم تفعيل إشعارات الصفقات القوية" : "High prob alerts enabled") : (currentLang === 'ar' ? "تم إيقاف إشعارات الصفقات القوية" : "Alerts disabled"));
     }
 
     function toggleMetaApiAuto(val) {
       if (val && (!metaApiToken || !metaApiAccountId)) {
-        showToast("⚠️ لا يمكن التفعيل: يرجى تعبئة بيانات الربط وحفظها أولاً!");
+        showToast(currentLang === 'ar' ? "⚠️ لا يمكن التفعيل: يرجى تعبئة بيانات الربط وحفظها أولاً!" : "⚠️ Cannot enable: Please fill MetaApi credentials first!");
         document.getElementById("metaApiAutoToggle").checked = false;
         isMetaApiAuto = false;
         try { localStorage.setItem("metaApiAuto", "false"); } catch(e){}
@@ -1000,7 +1055,7 @@
       }
       isMetaApiAuto = val;
       try { localStorage.setItem("metaApiAuto", val); } catch(e){}
-      showToast(val ? `⚡ تفعيل التداول الآلي للصفقات (+${radarMinSensitivity}%)` : "تم إيقاف التداول الآلي");
+      showToast(val ? (currentLang === 'ar' ? `⚡ تفعيل التداول الآلي للصفقات (+${radarMinSensitivity}%)` : `⚡ Auto trading enabled (+${radarMinSensitivity}%)`) : (currentLang === 'ar' ? "تم إيقاف التداول الآلي" : "Auto trading disabled"));
     }
 
     function removeInputGlow(elem) {
@@ -1019,7 +1074,7 @@
       if (!lotInput.value || parseFloat(lotInput.value) <= 0) { lotInput.classList.add("error-glow"); hasError = true; }
 
       if (hasError) {
-        showToast("❌ يرجى ملء كافة الخانات المطلوبة باللون الأحمر بشكل صحيح!");
+        showToast(currentLang === 'ar' ? "❌ يرجى ملء كافة الخانات المطلوبة باللون الأحمر بشكل صحيح!" : "❌ Please fill all required fields correctly!");
         return;
       }
 
@@ -1038,7 +1093,7 @@
       if (shouldVerify) {
         await verifyMetaApiConnection(true);
       } else {
-        showToast("✅ تم حفظ التفضيلات محلياً!");
+        showToast(currentLang === 'ar' ? "✅ تم حفظ التفضيلات محلياً!" : "✅ Settings saved locally!");
       }
     }
 
@@ -1051,11 +1106,11 @@
       card.className = "metaapi-card checking";
       statusBar.style.display = "flex";
       statusBar.className = "metaapi-status-bar mt-status-pending";
-      statusMsg.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري فحص البيانات وتأكيد اتصال حساب التداول...`;
+      statusMsg.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${currentLang === 'ar' ? 'جاري فحص البيانات وتأكيد اتصال حساب التداول...' : 'Verifying connection...'}`;
       
       if (showUiFeedback) {
         saveBtn.disabled = true;
-        saveBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري التحقق فنيّاً... 📡`;
+        saveBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${currentLang === 'ar' ? 'جاري التحقق فنيّاً... 📡' : 'Verifying... 📡'}`;
       }
 
       try {
@@ -1078,29 +1133,29 @@
           statusBar.className = "metaapi-status-bar mt-status-success";
           
           if (isConnected) {
-            statusMsg.innerHTML = `<i class="fa-solid fa-circle-check"></i> <b>متصل سحابياً ونشط 🟢</b> (${brokerName})`;
-            if (showUiFeedback) showToast(`🚀 ممتاز! تم تأكيد الاتصال السحابي مع ${brokerName} بنجاح!`);
+            statusMsg.innerHTML = `<i class="fa-solid fa-circle-check"></i> <b>${currentLang === 'ar' ? 'متصل سحابياً ونشط 🟢' : 'Connected & Active 🟢'}</b> (${brokerName})`;
+            if (showUiFeedback) showToast(currentLang === 'ar' ? `🚀 ممتاز! تم تأكيد الاتصال السحابي مع ${brokerName} بنجاح!` : `🚀 Connected to ${brokerName} successfully!`);
           } else {
-            statusMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> البيانات صحيحة 🟡 ولكن الحساب غير متصل حالياً في ميتاتريدر.`;
-            if (showUiFeedback) showToast("⚠ البيانات صحيحة، ولكن تأكد من تشغيل وتفعيل حساب MetaTrader سحابياً!");
+            statusMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${currentLang === 'ar' ? 'البيانات صحيحة 🟡 ولكن الحساب غير متصل حالياً في ميتاتريدر.' : 'Data valid 🟡 but account not connected in MetaTrader.'}`;
+            if (showUiFeedback) showToast(currentLang === 'ar' ? "⚠ البيانات صحيحة، ولكن تأكد من تشغيل وتفعيل حساب MetaTrader سحابياً!" : "⚠ Data valid, ensure MetaTrader account is deployed online!");
           }
         } else {
           card.className = "metaapi-card invalid";
           statusBar.className = "metaapi-status-bar mt-status-fail";
-          statusMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> بيانات خاطئة 🔴 (يرجى التحقق من مفتاح Token أو معرّف ID).`;
+          statusMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${currentLang === 'ar' ? 'بيانات خاطئة 🔴 (يرجى التحقق من مفتاح Token أو معرّف ID).' : 'Invalid credentials 🔴.'}`;
           highlightErrorInputs();
-          if (showUiFeedback) showToast("❌ فشل الربط: البيانات المدخلة غير صحيحة أو الحساب غير موجود!");
+          if (showUiFeedback) showToast(currentLang === 'ar' ? "❌ فشل الربط: البيانات المدخلة غير صحيحة أو الحساب غير موجود!" : "❌ Connection failed: Invalid credentials!");
         }
 
       } catch (err) {
         card.className = "metaapi-card invalid";
         statusBar.className = "metaapi-status-bar mt-status-fail";
-        statusMsg.innerHTML = `<i class="fa-solid fa-wifi"></i> تعذر الاتصال 🔴 (تأكد من الإنترنت أو صلاحية الـ Token).`;
-        if (showUiFeedback) showToast("⚠️ تعذر الاتصال بسيرفر التحقق، تأكد من اتصال الإنترنت وصلاحية البيانات!");
+        statusMsg.innerHTML = `<i class="fa-solid fa-wifi"></i> ${currentLang === 'ar' ? 'تعذر الاتصال 🔴 (تأكد من الإنترنت أو صلاحية الـ Token).' : 'Connection error 🔴.'}`;
+        if (showUiFeedback) showToast(currentLang === 'ar' ? "⚠️ تعذر الاتصال بسيرفر التحقق، تأكد من اتصال الإنترنت وصلاحية البيانات!" : "⚠️ Server unreachable, check internet connection!");
       } finally {
         if (showUiFeedback) {
           saveBtn.disabled = false;
-          saveBtn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> حفظ إعدادات حساب التداول واختبار الاتصال 🔗`;
+          saveBtn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> ${currentLang === 'ar' ? 'حفظ إعدادات حساب التداول واختبار الاتصال 🔗' : 'Save & Test Connection 🔗'}`;
         }
       }
     }
@@ -1112,12 +1167,12 @@
 
     async function executeViaMetaApi(tradeObj, isAuto = false) {
       if (!isOnline) {
-        showToast("⚠️ يتعذر تنفيذ الصفقة: لا يوجد اتصال بالإنترنت!");
+        showToast(currentLang === 'ar' ? "⚠️ يتعذر تنفيذ الصفقة: لا يوجد اتصال بالإنترنت!" : "⚠️ Cannot execute: No internet connection!");
         return;
       }
 
       if (!metaApiToken || !metaApiAccountId) {
-        showToast("⚠️ يرجى إدخال MetaApi Token و Account ID أولاً لحساب التداول");
+        showToast(currentLang === 'ar' ? "⚠️ يرجى إدخال MetaApi Token و Account ID أولاً لحساب التداول" : "⚠️ Please enter MetaApi Token and Account ID first");
         return;
       }
 
@@ -1139,7 +1194,7 @@
       };
 
       try {
-        showToast(`جاري إرسال أمر ${tradeObj.type} لـ ${mtSymbol} إلى ميتاتريدر...`);
+        showToast(currentLang === 'ar' ? `جاري إرسال أمر ${tradeObj.type} لـ ${mtSymbol} إلى ميتاتريدر...` : `Sending ${tradeObj.type} order for ${mtSymbol}...`);
         const url = `https://mt-client-api-v1.agiliumtrade.agiliumtrade.ai/users/current/accounts/${metaApiAccountId}/trade`;
         
         const response = await fetch(url, {
@@ -1154,12 +1209,12 @@
         const resData = await response.json();
 
         if (response.ok && (resData.stringCode === "TRADE_RETCODE_DONE" || resData.orderId || resData.numericCode === 10009)) {
-          showToast(`🚀 [${isAuto ? 'آلي +' + radarMinSensitivity + '%' : 'يدوي'}] تم فتح الصفقة بنجاح!`);
+          showToast(currentLang === 'ar' ? `🚀 [${isAuto ? 'آلي +' + radarMinSensitivity + '%' : 'يدوي'}] تم فتح الصفقة بنجاح!` : `🚀 Order executed successfully!`);
         } else {
-          showToast(`تم إرسال الأمر: ${resData.message || resData.stringCode || 'قيد المعالجة'}`);
+          showToast(currentLang === 'ar' ? `تم إرسال الأمر: ${resData.message || resData.stringCode || 'قيد المعالجة'}` : `Order sent: ${resData.message || resData.stringCode || 'Pending'}`);
         }
       } catch (err) {
-        showToast("⚠️ حدث خطأ في الاتصال بسيرفر MetaApi");
+        showToast(currentLang === 'ar' ? "⚠️ حدث خطأ في الاتصال بسيرفر MetaApi" : "⚠️ MetaApi server communication error");
       }
     }
 
@@ -1230,6 +1285,11 @@
       document.querySelectorAll("[data-i18n]").forEach(el => {
         const key = el.getAttribute("data-i18n");
         if (i18n[currentLang][key]) el.innerText = i18n[currentLang][key];
+      });
+
+      document.querySelectorAll("[data-i18n-group]").forEach(el => {
+        const key = el.getAttribute("data-i18n-group");
+        if (i18n[currentLang][key]) el.label = i18n[currentLang][key];
       });
 
       renderPairSelectors();
@@ -1611,10 +1671,13 @@
       const tp1 = isBuy ? (entryPrice + slDist * rrRatio) : (entryPrice - slDist * rrRatio);
       const tp2 = isBuy ? (entryPrice + slDist * (rrRatio * 1.5)) : (entryPrice - slDist * (rrRatio * 1.5));
 
+      const pairCfg = getPairConfig(id);
+      const displayName = currentLang === 'ar' ? pairCfg.name : pairCfg.enName;
+
       const trade = {
         id: "T_" + Date.now(),
         symbolId: id,
-        name: name,
+        name: displayName,
         type: type || "BUY",
         interval: interval || "15m",
         rr: rrRatio,
@@ -1751,8 +1814,8 @@
 
         const isBuy = (t.type === "BUY");
         const typeBadge = isBuy 
-          ? `<span class="trade-type-badge type-buy"><i class="fa-solid fa-arrow-trend-up"></i> ${i18n[currentLang].typeBuy}</span>`
-          : `<span class="trade-type-badge type-sell"><i class="fa-solid fa-arrow-trend-down"></i> ${i18n[currentLang].typeSell}</span>`;
+          ? `<span class="trade-type-badge type-buy"><i class="fa-solid fa-arrow-trend-up"></i> ${currentLang === 'ar' ? 'شراء BUY' : 'BUY'}</span>`
+          : `<span class="trade-type-badge type-sell"><i class="fa-solid fa-arrow-trend-down"></i> ${currentLang === 'ar' ? 'بيع SELL' : 'SELL'}</span>`;
 
         const entryValStr = t.entry.toFixed(t.precision);
         const tp1ValStr = (t.tp1 || t.tp).toFixed(t.precision);
@@ -1777,7 +1840,7 @@
 
           <div class="early-entry-badge">
             <i class="fa-solid fa-bolt"></i>
-            <span>${i18n[currentLang].earlyHint}</span>
+            <span>${currentLang === 'ar' ? '⚡ رصد استباقي مبكر: علّق أمر دخول مع الارتداد' : '⚡ Early Trigger: Place a limit order on pullback'}</span>
           </div>
 
           <div class="trade-params-grid">
@@ -1822,7 +1885,7 @@
             </div>
           </div>
 
-          ${t.news ? `<div class="trade-news-alert"><i class="fa-solid fa-bolt"></i> <b>تنبيه خبر:</b> ${t.news}</div>` : ''}
+          ${t.news ? `<div class="trade-news-alert"><i class="fa-solid fa-bolt"></i> <b>${currentLang === 'ar' ? 'تنبيه خبر:' : 'News Alert:'}</b> ${t.news}</div>` : ''}
 
           <div class="trade-bottom-row">
             <div>
@@ -1830,7 +1893,7 @@
             </div>
             <div class="trade-btn-group">
               <button class="btn-action-sm btn-cloud-exec" title="تنفيذ سحابي فوري في حساب MetaTrader" onclick='executeViaMetaApi(${JSON.stringify(t)}, false)'>
-                <i class="fa-solid fa-bolt"></i> تنفيذ MetaApi
+                <i class="fa-solid fa-bolt"></i> ${currentLang === 'ar' ? 'تنفيذ MetaApi' : 'MetaApi Exec'}
               </button>
               <button class="btn-action-sm btn-copy-all" title="نسخ كامل التقرير" onclick="copyFullTrade('${t.id}')">
                 <i class="fa-solid fa-clipboard-list"></i> ${i18n[currentLang].btnCopyAll}
@@ -1964,7 +2027,7 @@
             color: '#0ecb81',
             shape: isBuy ? 'arrowUp' : 'arrowDown',
             size: 2,
-            text: `ربح TP ${t.entry.toFixed(t.precision)} [${t.prob}%]`
+            text: `TP ${t.entry.toFixed(t.precision)} [${t.prob}%]`
           });
         } else if (t.status === "LOST") {
           markers.push({
@@ -1973,7 +2036,7 @@
             color: '#f6465d',
             shape: isBuy ? 'arrowDown' : 'arrowUp',
             size: 2,
-            text: `وقف SL ${t.entry.toFixed(t.precision)} [${t.prob}%]`
+            text: `SL ${t.entry.toFixed(t.precision)} [${t.prob}%]`
           });
         } else {
           markers.push({
@@ -1982,7 +2045,7 @@
             color: isBuy ? '#0ecb81' : '#f6465d',
             shape: isBuy ? 'arrowUp' : 'arrowDown',
             size: 2,
-            text: `${isBuy ? 'شراء' : 'بيع'} ${t.entry.toFixed(t.precision)} [${t.prob}%]`
+            text: `${isBuy ? 'BUY' : 'SELL'} ${t.entry.toFixed(t.precision)} [${t.prob}%]`
           });
         }
       });
@@ -2003,10 +2066,12 @@
       const switcher = document.getElementById("chartSymbolSwitcher");
       const fixedBadge = document.getElementById("chartFixedSymbolBadge");
 
+      const currentTargetName = currentLang === 'ar' ? cfg.name : cfg.enName;
+
       if (isCustomSignal) {
         switcher.style.display = "none";
         fixedBadge.style.display = "inline-block";
-        fixedBadge.innerText = `${targetName} [${activeChartInterval}]`;
+        fixedBadge.innerText = `${currentTargetName} [${activeChartInterval}]`;
       } else {
         switcher.style.display = "inline-block";
         fixedBadge.style.display = "none";
@@ -2098,7 +2163,7 @@
 
         if (entryPrice) {
           const entryColor = isBuy ? '#0ecb81' : '#f6465d';
-          const entryTitle = isBuy ? 'دخول شراء (BUY)' : 'دخول بيع (SELL)';
+          const entryTitle = isBuy ? (currentLang === 'ar' ? 'دخول شراء (BUY)' : 'BUY Entry') : (currentLang === 'ar' ? 'دخول بيع (SELL)' : 'SELL Entry');
 
           candleSeries.createPriceLine({
             price: entryPrice, color: entryColor, lineWidth: 2,
@@ -2108,14 +2173,14 @@
           if (tpPrice) {
             candleSeries.createPriceLine({
               price: tpPrice, color: '#0ecb81', lineWidth: 1,
-              lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: i18n[currentLang].legTp1
+              lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: currentLang === 'ar' ? 'هدف (TP)' : 'Take Profit (TP)'
             });
           }
 
           if (slPrice) {
             candleSeries.createPriceLine({
               price: slPrice, color: '#f6465d', lineWidth: 1,
-              lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: i18n[currentLang].legSl
+              lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: currentLang === 'ar' ? 'وقف (SL)' : 'Stop Loss (SL)'
             });
           }
         }
