@@ -30,11 +30,12 @@ jobs:
           npx cap init "Alpha Radar" "com.alpharadar.app" --web-dir www
           npx cap add android
 
-      - name: Build Android APK via Gradle
+      - name: Clean Gradle Cache & Build Android APK
         run: |
           cd android
+          rm -rf ~/.gradle/caches/
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew clean assembleDebug
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
