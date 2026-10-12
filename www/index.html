@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Alpha Radar Pro - Offline & Online Monitor Edition</title>
   
-  <!-- الأيقونة المدمجة مباشرة داخل الكود لتجنب أي تعقيد -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' width='512' height='512'&gt;&lt;defs&gt;&lt;linearGradient id='bgGrad' x1='0%' y1='0%' x2='100%' y2='100%'&gt;&lt;stop offset='0%' stop-color='%23151922' /&gt;&lt;stop offset='100%' stop-color='%230b0e14' /&gt;&lt;/linearGradient&gt;&lt;linearGradient id='greenGrad' x1='0%' y1='100%' x2='0%' y2='0%'&gt;&lt;stop offset='0%' stop-color='%230ecb81' stop-opacity='0.2' /&gt;&lt;stop offset='100%' stop-color='%230ecb81' stop-opacity='0.9' /&gt;&lt;/linearGradient&gt;&lt;/defs&gt;&lt;rect width='512' height='512' rx='110' fill='url(%23bgGrad)' /&gt;&lt;circle cx='256' cy='256' r='160' fill='none' stroke='%23272e3d' stroke-width='3' stroke-dasharray='6,6' /&gt;&lt;circle cx='256' cy='256' r='100' fill='none' stroke='%23272e3d' stroke-width='2' /&gt;&lt;line x1='96' y1='256' x2='416' y2='256' stroke='%23272e3d' stroke-width='2' /&gt;&lt;line x1='256' y1='96' x2='256' y2='416' stroke='%23272e3d' stroke-width='2' /&gt;&lt;path d='M 120 360 L 190 290 L 260 320 L 350 180 L 410 130' fill='none' stroke='url(%23greenGrad)' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' /&gt;&lt;rect x='335' y='150' width='30' height='90' rx='6' fill='%230ecb81' /&gt;&lt;line x1='350' y1='130' x2='350' y2='260' stroke='%230ecb81' stroke-width='4' /&gt;&lt;rect x='395' y='110' width='30' height='70' rx='6' fill='%230ecb81' /&gt;&lt;line x1='410' y1='95' x2='410' y2='200' stroke='%230ecb81' stroke-width='4' /&gt;&lt;path d='M 240 130 L 180 240 H 250 L 220 370 L 310 230 H 240 Z' fill='%23f0b90b' /&gt;&lt;/svg&gt;">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -88,21 +87,8 @@
 
     .notif-toggle-card {
       background: var(--bg-card); border: 1px solid var(--border-color);
-      border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;
+      border-radius: 12px; padding: 10px 14px; display: flex; flex-direction: column; gap: 10px;
     }
-
-    .switch-ui { position: relative; display: inline-block; width: 44px; height: 24px; }
-    .switch-ui input { opacity: 0; width: 0; height: 0; }
-    .slider-ui {
-      position: absolute; cursor: pointer; inset: 0; background-color: var(--bg-input);
-      border: 1px solid var(--border-color); transition: .3s; border-radius: 24px;
-    }
-    .slider-ui:before {
-      position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px;
-      background-color: #8c9ba8; transition: .3s; border-radius: 50%;
-    }
-    input:checked + .slider-ui { background-color: var(--accent-green); border-color: var(--accent-green); }
-    input:checked + .slider-ui:before { transform: translateX(20px); background-color: #0b0e14; }
 
     .metaapi-card {
       background: var(--bg-card); border: 1px solid var(--border-color); border-top: 3px solid #00c0f3;
@@ -125,21 +111,19 @@
     .metaapi-input {
       background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-primary);
       padding: 7.5px 11px; border-radius: 8px; font-size: 11px; outline: none; font-family: 'JetBrains Mono', monospace; font-weight: 700;
-      transition: border-color 0.25s, box-shadow 0.25s;
     }
     .metaapi-input.error-glow { border-color: var(--accent-red); box-shadow: 0 0 6px rgba(246, 70, 93, 0.4); }
 
     .btn-save-metaapi {
       background: #00c0f3; color: #071018; border: none; padding: 9px 12px; border-radius: 8px; font-weight: 800; font-size: 11.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
     }
-    .btn-save-metaapi:disabled { background: var(--bg-input) !important; color: var(--text-secondary) !important; cursor: not-allowed; }
 
     .metaapi-status-bar {
       display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700;
       padding: 6px 10px; border-radius: 6px; background: rgba(140, 155, 168, 0.08); margin-top: 2px;
     }
     .mt-status-pending { color: var(--accent-yellow); }
-    .mt-status-success { color: var(--accent-green); background: rgba(14, 203, 129, 0.1); border: 1px solid var(--accent-green-glow); }
+    .mt-status-success { color: var(--accent-green); background: rgba(14, 203, 129, 0.1); border: 1px solid var(--accent-green); }
     .mt-status-fail { color: var(--accent-red); background: rgba(246, 70, 93, 0.1); border: 1px solid rgba(246, 70, 93, 0.2); }
 
     .performance-bar {
@@ -384,8 +368,7 @@
       </div>
     </div>
 
-    <!-- بطاقة حساسية الرادار وزر إعادة الضبط -->
-    <div class="notif-toggle-card" style="flex-direction: column; align-items: stretch; gap: 10px;">
+    <div class="notif-toggle-card">
       <div style="display: flex; flex-direction: column; gap: 5px;">
         <label for="radarSensitivity" style="font-size: 11.5px; font-weight: 700; color: var(--text-primary);">
           <i class="fa-solid fa-sliders"></i> <span data-i18n="sensitivityLabel">حساسية الرادار (الحد الأدنى للتوافق):</span>
@@ -414,9 +397,9 @@
         </div>
         <div style="display: flex; align-items: center; gap: 8px;" onclick="event.stopPropagation();">
           <span class="metaapi-badge" id="mtTradingModeBadge" style="font-size: 10px; font-weight: 700; color: #00c0f3;">تداول آلي</span>
-          <label class="switch-ui" title="تفعيل التداول التلقائي السحابي للصفقات المختارة">
-            <input type="checkbox" id="metaApiAutoToggle" onchange="toggleMetaApiAuto(this.checked)">
-            <span class="slider-ui"></span>
+          <label class="switch-ui" title="تفعيل التداول التلقائي السحابي للصفقات المختارة" style="position: relative; display: inline-block; width: 44px; height: 24px;">
+            <input type="checkbox" id="metaApiAutoToggle" onchange="toggleMetaApiAuto(this.checked)" style="opacity:0; width:0; height:0;">
+            <span class="slider-ui" style="position: absolute; cursor: pointer; inset: 0; background-color: var(--bg-input); border: 1px solid var(--border-color); transition: .3s; border-radius: 24px;"></span>
           </label>
         </div>
       </div>
@@ -633,7 +616,6 @@
   <script>
     let currentLang = "ar";
     let isMuted = false;
-    let highProbNotifEnabled = false;
     let currentTheme = localStorage.getItem("alphaRadarTheme") || "dark";
     
     let radarMinSensitivity = parseInt(localStorage.getItem("radarMinSensitivity")) || 60;
@@ -649,8 +631,6 @@
     const i18n = {
       ar: {
         appSub: "رادار التوافق الفني وتتبع الصفقات اللحظي",
-        notifTitle: "إشعارات الصفقات القوية",
-        notifDesc: "إرسال إشعار فوري وتنبيه صوتي واهتزاز",
         sensitivityLabel: "حساسية الرادار (الحد الأدنى للتوافق):",
         sens60: "60% (تشغيل موسع - صفقات أكثر)",
         sens70: "70% (متوازن)",
@@ -740,8 +720,6 @@
       },
       en: {
         appSub: "Multi-Strategy Confluence, News & Signal Radar",
-        notifTitle: "High Probability Alerts",
-        notifDesc: "Send push notification with sound & vibration",
         sensitivityLabel: "Radar Sensitivity (Min Confluence):",
         sens60: "60% (Extended Scan - More Trades)",
         sens70: "70% (Balanced)",
@@ -830,6 +808,29 @@
         legendSl: "Stop Loss (SL)"
       }
     };
+
+    // دالة لتوليد تنبيه صوتي فوري (Beep) عند كل صفقة جديدة
+    function playAlertSound() {
+      if (isMuted) return;
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(880, ctx.currentTime); // نوتة تنبيه واضحة
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.start();
+        osc.stop(ctx.currentTime + 0.4);
+      } catch (e) {}
+    }
 
     function updateRadarSensitivity(val) {
       radarMinSensitivity = parseInt(val) || 60;
@@ -1194,9 +1195,12 @@
       if (isMuted) {
         icon.className = "fa-solid fa-volume-xmark";
         icon.style.color = "var(--accent-red)";
+        showToast(currentLang === 'ar' ? "🔇 تم كتم الصوت" : "Muted");
       } else {
         icon.className = "fa-solid fa-volume-high";
         icon.style.color = "var(--text-primary)";
+        showToast(currentLang === 'ar' ? "🔊 تم تفعيل الصوت" : "Sound Enabled");
+        playAlertSound(); // تجربة الصوت عند التفعيل
       }
     }
 
@@ -1307,7 +1311,6 @@
     let activePairsList = [...ALL_PAIRS];
     let currentIndex = 0;
     let isRunning = false;
-    let audioCtx = null;
     let lastAlertTracker = {};
     let lastAlertCandleTime = {};
     let bgWorker = null;
@@ -1464,12 +1467,18 @@
         if (!Array.isArray(data) || data.length < 50) return;
 
         const closes = data.map(c => parseFloat(c[4]));
+        const highs = data.map(c => parseFloat(c[2]));
+        const lows = data.map(c => parseFloat(c[3]));
+        
         const currentPrice = closes[closes.length - 1];
+        const currentHigh = highs[highs.length - 1];
+        const currentLow = lows[lows.length - 1];
         const lastCandleTime = Math.floor(data[data.length - 1][0] / 1000);
         
         document.getElementById("currentPrice").innerText = "$" + currentPrice.toLocaleString(undefined, { minimumFractionDigits: cfg.precision });
 
-        checkOpenTrades(targetId, currentPrice);
+        // فحص الأهداف المفتوحة لكل الصفقات وتحديث حالتها بدقة عبر high و low للشمعة
+        checkOpenTrades(targetId, currentPrice, currentHigh, currentLow);
 
         let dynamicProb = 0;
         let conditionsMet = 0;
@@ -1567,7 +1576,7 @@
         }
 
       } catch (err) {
-        console.warn("إعادة المحاولة الصامتة لجلب البيانات لتجنب أي تعطل بالواجهة:", err);
+        console.warn("إعادة المحاولة الصامتة لجلب البيانات:", err);
       }
     }
 
@@ -1576,7 +1585,7 @@
       const rrRatio = parseFloat(document.getElementById("rrRatioSelect")?.value) || 1.5;
 
       const entryPrice = currentPrice;
-      const slDist = currentPrice * 0.003;
+      const slDist = currentPrice * 0.0025; // تقريب مسافة الوقف والهدف لتسريع رصد النتائج
       
       const sl = isBuy ? (entryPrice - slDist) : (entryPrice + slDist);
       const tp1 = isBuy ? (entryPrice + slDist * rrRatio) : (entryPrice - slDist * rrRatio);
@@ -1611,6 +1620,9 @@
       renderTradesUI();
       saveStateToLocalStorage();
 
+      // تشغيل التنبيه الصوتي عند كل صفقة جديدة
+      playAlertSound();
+
       if (isMetaApiAuto && prob >= radarMinSensitivity) {
         executeViaMetaApi(trade, true);
       }
@@ -1620,26 +1632,29 @@
       }
     }
 
-    function checkOpenTrades(symbolId, currentPrice) {
+    function checkOpenTrades(symbolId, currentPrice, currentHigh, currentLow) {
       let updated = false;
       tradesHistory.forEach(t => {
         if (t.status === "RUNNING" && t.symbolId === symbolId) {
+          const targetTp = t.tp2 || t.tp;
           if (t.type === "BUY") {
-            if (currentPrice >= (t.tp2 || t.tp)) {
+            // التحقق من أعلى السعر لوصول الهدف أو أدنى السعر لضرب الوقف
+            if (currentHigh >= targetTp) {
               t.status = "WON";
               stats.won++;
               updated = true;
-            } else if (currentPrice <= t.sl) {
+            } else if (currentLow <= t.sl) {
               t.status = "LOST";
               stats.lost++;
               updated = true;
             }
           } else {
-            if (currentPrice <= (t.tp2 || t.tp)) {
+            // للبيع: التحقق من أدنى السعر لوصول الهدف أو أعلى السعر لضرب الوقف
+            if (currentLow <= targetTp) {
               t.status = "WON";
               stats.won++;
               updated = true;
-            } else if (currentPrice >= t.sl) {
+            } else if (currentHigh >= t.sl) {
               t.status = "LOST";
               stats.lost++;
               updated = true;
