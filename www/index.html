@@ -1243,7 +1243,7 @@
       { id: "N6", symbolId: "ETHUSDT", titleAr: "ترقية الشبكة ونشاط الرسوم في بلوكتشين الإيثيريوم", titleEn: "Ethereum Network Upgrade & Staking Activity", minutesLeft: 110, impactBadge: "⚠️ متوسط التأثير", forecastAr: "🟢 تعزيز استقرار سعر ETH مع انخفاض المعروض", forecastEn: "🟢 Positive stability on declining exchange supply" },
       { id: "N7", symbolId: "SOLUSDT", titleAr: "تقرير حجم التداول اليومي في شبكة سولانا (Solana DEX Volume)", titleEn: "Solana Network DEX Volume & On-Chain Activity", minutesLeft: 42, impactBadge: "⚠️ متوسط التأثير", forecastAr: "🟢 زخم شرائي مستمر يدعم اختبار مقاومات جديدة", forecastEn: "🟢 Strong momentum testing upper resistances" },
       { id: "N8", symbolId: "BNBUSDT", titleAr: "حرق عملات BNB الفصلي وتحديثات منصة بينانس", titleEn: "Quarterly BNB Burn & Platform Ecosystem Updates", minutesLeft: 160, impactBadge: "⚠️ متوسط التأثير", forecastAr: "🟢 دعم سعري إيجابي يقلل المعروض المتداول", forecastEn: "🟢 Favorable deflationary price support" },
-      { id: "N9", symbolId: "XRPUSDT", titleAr: "مستجدات الإفصاحات القانونية لهيئة الأوراق المالية (SEC v Ripple)", titleEn: "Ripple Legal Case Updates & Institutional Custody", minutesLeft: 65, impactBadge: "🔥 عالي التأثير", forecastAr: "⚡ تقلبات سعرية سريعة مع أي بيان رسمي إيجابي", forecastEn: "⚡ Sharp breakout on positive regulatory filings" },
+      { id: "N9", symbolId: "XRPUSDT", titleAr: "مستجدات الإفصاحات القانونية لهيئة الأوراق المالية (SEC v Ripple)", titleEn: "Ripple Legal Case Updates & Institutional Custody", minutesLeft: 65, impactBadge: "🔥 عالي التأثير", forecastAr: "⚡ تقلبات سعرية سريعة مع أي بيان رسمي إيجابي", forecastEn: "🟢 Bullish continuation on spot accumulation" },
       { id: "N10", symbolId: "ADAUSDT", titleAr: "تحديثات الحوكمة اللامركزية لمنظومة كاردانو (Cardano Chang Era)", titleEn: "Cardano Decentralized Governance Progress", minutesLeft: 145, impactBadge: "⚠️ متوسط التأثير", forecastAr: "🟢 تماسك سعري تدريجي عند مناطق الدعم الحالية", forecastEn: "🟢 Gradual accumulation at solid base levels" }
     ];
 
@@ -1583,15 +1583,15 @@
       const rrRatio = parseFloat(document.getElementById("rrRatioSelect")?.value) || 1.5;
 
       const entryPrice = currentPrice;
-      const dist = currentPrice * 0.005; 
+      const dist = currentPrice * 0.003; // ضبط مسافة متوازنة للوقف والهدف
       
-      // تصحيح منطق حساب الوقف والهدف ليكون صحيحاً لصفقات الشراء والبيع تماماً
       let sl, tp1, tp2;
       if (isBuy) {
         sl = entryPrice - dist;
         tp1 = entryPrice + (dist * rrRatio);
         tp2 = entryPrice + (dist * rrRatio * 1.5);
       } else {
+        // تصحيح دقيق: لصفقات البيع الوقف أعلى والدخول والهدف أسفل
         sl = entryPrice + dist;
         tp1 = entryPrice - (dist * rrRatio);
         tp2 = entryPrice - (dist * rrRatio * 1.5);
@@ -1653,7 +1653,7 @@
               updated = true;
             }
           } else {
-            // تصحيح التحقق لصفقات البيع (الهدف في الأسفل والوقف في الأعلى)
+            // التحقق الصحيح لصفقات البيع (الهدف في الأسفل والوقف في الأعلى)
             if (currentLow <= targetTp) {
               t.status = "WON";
               stats.won++;
