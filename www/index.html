@@ -388,7 +388,7 @@
       <div class="notif-info">
         <i class="fa-solid fa-bell"></i>
         <div>
-          <b data-i18n="notifTitle">إشعارات الصفقات القوية (+85%)</b>
+          <b data-i18n="notifTitle">إشعارات الصفقات القوية</b>
           <p data-i18n="notifDesc">إرسال إشعار فوري وتنبيه صوتي واهتزاز</p>
         </div>
       </div>
@@ -396,6 +396,27 @@
         <input type="checkbox" id="highProbNotifToggle" onchange="toggleHighProbNotifications(this.checked)">
         <span class="slider-ui"></span>
       </label>
+    </div>
+
+    <!-- بطاقة حساسية الرادار وزر إعادة الضبط -->
+    <div class="notif-toggle-card" style="flex-direction: column; align-items: stretch; gap: 10px;">
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <label for="radarSensitivity" style="font-size: 11.5px; font-weight: 700; color: var(--text-primary);">
+          <i class="fa-solid fa-sliders"></i> حساسية الرادار (الحد الأدنى للتوافق):
+        </label>
+        <select id="radarSensitivity" style="background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-primary); padding: 8px 10px; border-radius: 8px; font-size: 11.5px; outline: none; font-weight: 700;" onchange="updateRadarSensitivity(this.value)">
+          <option value="60">60% (تشغيل موسع - صفقات أكثر)</option>
+          <option value="65">65%</option>
+          <option value="70">70% (متوازن)</option>
+          <option value="75">75%</option>
+          <option value="80">80%</option>
+          <option value="85" selected>85% (صارم وقوي)</option>
+        </select>
+      </div>
+
+      <button onclick="resetRadarDataAndCounters()" style="width: 100%; padding: 9px; background: rgba(246, 70, 93, 0.15); color: var(--accent-red); border: 1px solid rgba(246, 70, 93, 0.3); border-radius: 8px; font-weight: 800; font-size: 11.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+        <i class="fa-solid fa-rotate-right"></i> تصفير البيانات والعدادات والبدء من الصفر 🔄
+      </button>
     </div>
 
     <div class="metaapi-card" id="metaApiCard">
@@ -430,16 +451,6 @@
               <label><i class="fa-solid fa-cubes-stacked"></i> حجم اللوت (Lot):</label>
               <input type="number" step="0.01" min="0.01" id="metaApiLot" class="metaapi-input" value="0.01" onfocus="removeInputGlow(this)">
             </div>
-          </div>
-
-          <div class="metaapi-field">
-            <label><i class="fa-solid fa-chart-line"></i> الحد الأدنى لنسبة نجاح الصفقة للتداول الآلي:</label>
-            <select id="metaApiMinProb" class="metaapi-input" style="padding: 7px 9px;" onchange="saveMetaApiCredentials(false)">
-              <option value="90">90% (صفقات نادرة جداً - أمان أقصى) 🔥</option>
-              <option value="85" selected>85% (الوضع الموصى به - توازن ممتاز) ✨</option>
-              <option value="80">80% (مخاطرة متوسطة) ⚖️</option>
-              <option value="75">75% (صفقات مكثفة - مخاطرة أعلى) ⚡</option>
-            </select>
           </div>
 
           <button class="btn-save-metaapi" id="saveMetaApiBtn" onclick="saveMetaApiCredentials(true)">
@@ -639,11 +650,12 @@
     let highProbNotifEnabled = localStorage.getItem("highProbNotif") !== "false";
     let currentTheme = localStorage.getItem("alphaRadarTheme") || "dark";
     
+    let radarMinSensitivity = parseInt(localStorage.getItem("radarMinSensitivity")) || 60;
+
     let metaApiToken = localStorage.getItem("metaApiToken") || "";
     let metaApiAccountId = localStorage.getItem("metaApiAccountId") || "";
     let metaApiLot = parseFloat(localStorage.getItem("metaApiLot")) || 0.01;
     let isMetaApiAuto = localStorage.getItem("metaApiAuto") === "true";
-    let metaApiMinProb = parseInt(localStorage.getItem("metaApiMinProb")) || 85;
 
     let isOnline = navigator.onLine;
     let wakeLock = null;
@@ -651,7 +663,7 @@
     const i18n = {
       ar: {
         appSub: "رادار التوافق الفني وتتبع الصفقات اللحظي",
-        notifTitle: "إشعارات الصفقات القوية (+85%)",
+        notifTitle: "إشعارات الصفقات القوية",
         notifDesc: "إرسال إشعار فوري وتنبيه صوتي واهتزاز",
         stopped: "متوقف",
         running: "الرادار يعمل...",
@@ -715,7 +727,7 @@
       },
       en: {
         appSub: "Multi-Strategy Confluence, News & Signal Radar",
-        notifTitle: "High Probability Alerts (+85%)",
+        notifTitle: "High Probability Alerts",
         notifDesc: "Send push notification with sound & vibration",
         stopped: "Stopped",
         running: "Radar Active...",
@@ -778,6 +790,26 @@
         netOnline: "✅ Internet connection restored successfully!"
       }
     };
+
+    function updateRadarSensitivity(val) {
+      radarMinSensitivity = parseInt(val) || 60;
+      try { localStorage.setItem("radarMinSensitivity", radarMinSensitivity); } catch(e){}
+      showToast(`⚡ تم ضبط حساسية الرادار لتلتقط الصفقات من ${radarMinSensitivity}% فما فوق`);
+    }
+
+    function resetRadarDataAndCounters() {
+      if (confirm("هل أنت متأكد من رغبتك في تصفير العدادات ومسح جميع الصفقات والبدء من الصفر؟")) {
+        tradesHistory = [];
+        stats = { total: 0, won: 0, lost: 0 };
+        try {
+          localStorage.removeItem("alphaTradesHistory");
+          localStorage.removeItem("alphaStats");
+        } catch(e){}
+        updateStatsUI();
+        renderTradesUI();
+        showToast("🔄 تم تصفير كافة العدادات والصفقات بنجاح!");
+      }
+    }
 
     async function requestWakeLock() {
       try {
@@ -880,10 +912,12 @@
       const metaToggle = document.getElementById("metaApiAutoToggle");
       if (metaToggle) metaToggle.checked = isMetaApiAuto;
 
+      const sensitivitySelect = document.getElementById("radarSensitivity");
+      if (sensitivitySelect) sensitivitySelect.value = radarMinSensitivity;
+
       document.getElementById("metaApiToken").value = metaApiToken;
       document.getElementById("metaApiAccountId").value = metaApiAccountId;
       document.getElementById("metaApiLot").value = metaApiLot;
-      document.getElementById("metaApiMinProb").value = metaApiMinProb;
 
       try {
         const savedPlatform = localStorage.getItem("alphaPlatform");
@@ -944,7 +978,7 @@
 
     function updateTradingModeBadge() {
       const badge = document.getElementById("mtTradingModeBadge");
-      if (badge) badge.innerText = `تداول آلي (+${metaApiMinProb}%)`;
+      if (badge) badge.innerText = `تداول آلي (+${radarMinSensitivity}%)`;
     }
 
     function toggleHighProbNotifications(val) {
@@ -953,7 +987,7 @@
       if (val && "Notification" in window && Notification.permission !== "granted") {
         Notification.requestPermission();
       }
-      showToast(val ? "تم تفعيل إشعارات الصفقات القوية (+85%)" : "تم إيقاف إشعارات الصفقات القوية");
+      showToast(val ? "تم تفعيل إشعارات الصفقات القوية" : "تم إيقاف إشعارات الصفقات القوية");
     }
 
     function toggleMetaApiAuto(val) {
@@ -966,7 +1000,7 @@
       }
       isMetaApiAuto = val;
       try { localStorage.setItem("metaApiAuto", val); } catch(e){}
-      showToast(val ? `⚡ تفعيل التداول الآلي للصفقات (+${metaApiMinProb}%)` : "تم إيقاف التداول الآلي");
+      showToast(val ? `⚡ تفعيل التداول الآلي للصفقات (+${radarMinSensitivity}%)` : "تم إيقاف التداول الآلي");
     }
 
     function removeInputGlow(elem) {
@@ -992,13 +1026,11 @@
       metaApiToken = tokenInput.value.trim();
       metaApiAccountId = idInput.value.trim();
       metaApiLot = parseFloat(lotInput.value) || 0.01;
-      metaApiMinProb = parseInt(document.getElementById("metaApiMinProb").value) || 85;
 
       try {
         localStorage.setItem("metaApiToken", metaApiToken);
         localStorage.setItem("metaApiAccountId", metaApiAccountId);
         localStorage.setItem("metaApiLot", metaApiLot);
-        localStorage.setItem("metaApiMinProb", metaApiMinProb);
       } catch(e){}
 
       updateTradingModeBadge();
@@ -1122,7 +1154,7 @@
         const resData = await response.json();
 
         if (response.ok && (resData.stringCode === "TRADE_RETCODE_DONE" || resData.orderId || resData.numericCode === 10009)) {
-          showToast(`🚀 [${isAuto ? 'آلي +' + metaApiMinProb + '%' : 'يدوي'}] تم فتح الصفقة بنجاح!`);
+          showToast(`🚀 [${isAuto ? 'آلي +' + radarMinSensitivity + '%' : 'يدوي'}] تم فتح الصفقة بنجاح!`);
         } else {
           showToast(`تم إرسال الأمر: ${resData.message || resData.stringCode || 'قيد المعالجة'}`);
         }
@@ -1533,7 +1565,7 @@
         const hasActiveTrade = tradesHistory.some(t => t.symbolId === targetId && t.status === "RUNNING");
         const isSameCandle = (lastAlertCandleTime[targetId] === lastCandleTime);
 
-        if (!hasActiveTrade && !isSameCandle && conditionsMet >= 2 && dynamicProb >= 50) {
+        if (!hasActiveTrade && !isSameCandle && dynamicProb >= radarMinSensitivity) {
           scoreElem.style.color = "var(--accent-green)";
           const now = Date.now();
           if (!lastAlertTracker[targetId] || now - lastAlertTracker[targetId] > 30000) {
@@ -1545,8 +1577,8 @@
             const relevantNews = GLOBAL_ECONOMIC_NEWS.find(n => n.symbolId === targetId);
             const typeLabel = tradeType === "BUY" ? "🟢 شراء BUY" : "🔴 بيع SELL";
 
-            if (highProbNotifEnabled && dynamicProb >= 85) {
-              const notifTitle = `🔥 فرصة ذهبية (+85%): ${targetName} [${typeLabel}]`;
+            if (highProbNotifEnabled && dynamicProb >= radarMinSensitivity) {
+              const notifTitle = `🔥 فرصة رادار (+${dynamicProb}%): ${targetName} [${typeLabel}]`;
               let notifBody = `📊 احتمالية النجاح: ${dynamicProb}%\n🚀 نقطة الدخول: ${currentPrice.toFixed(cfg.precision)}`;
               if (relevantNews) {
                 notifBody += `\n⚠ خبر: ${relevantNews.titleAr}`;
@@ -1605,7 +1637,7 @@
       renderTradesUI();
       saveStateToLocalStorage();
 
-      if (isMetaApiAuto && prob >= metaApiMinProb) {
+      if (isMetaApiAuto && prob >= radarMinSensitivity) {
         executeViaMetaApi(trade, true);
       }
 
