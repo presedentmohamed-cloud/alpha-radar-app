@@ -809,7 +809,6 @@
       }
     };
 
-    // دالة لتوليد تنبيه صوتي فوري (Beep) عند كل صفقة جديدة
     function playAlertSound() {
       if (isMuted) return;
       try {
@@ -820,7 +819,7 @@
         const gain = ctx.createGain();
         
         osc.type = "sine";
-        osc.frequency.setValueAtTime(880, ctx.currentTime); // نوتة تنبيه واضحة
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
         gain.gain.setValueAtTime(0.15, ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
 
@@ -1200,7 +1199,7 @@
         icon.className = "fa-solid fa-volume-high";
         icon.style.color = "var(--text-primary)";
         showToast(currentLang === 'ar' ? "🔊 تم تفعيل الصوت" : "Sound Enabled");
-        playAlertSound(); // تجربة الصوت عند التفعيل
+        playAlertSound();
       }
     }
 
@@ -1477,7 +1476,6 @@
         
         document.getElementById("currentPrice").innerText = "$" + currentPrice.toLocaleString(undefined, { minimumFractionDigits: cfg.precision });
 
-        // فحص الأهداف المفتوحة لكل الصفقات وتحديث حالتها بدقة عبر high و low للشمعة
         checkOpenTrades(targetId, currentPrice, currentHigh, currentLow);
 
         let dynamicProb = 0;
@@ -1585,7 +1583,7 @@
       const rrRatio = parseFloat(document.getElementById("rrRatioSelect")?.value) || 1.5;
 
       const entryPrice = currentPrice;
-      const slDist = currentPrice * 0.0025; // تقريب مسافة الوقف والهدف لتسريع رصد النتائج
+      const slDist = currentPrice * 0.008; // زيادة مسافة الوقف لمنع الضرب السريع
       
       const sl = isBuy ? (entryPrice - slDist) : (entryPrice + slDist);
       const tp1 = isBuy ? (entryPrice + slDist * rrRatio) : (entryPrice - slDist * rrRatio);
@@ -1620,7 +1618,6 @@
       renderTradesUI();
       saveStateToLocalStorage();
 
-      // تشغيل التنبيه الصوتي عند كل صفقة جديدة
       playAlertSound();
 
       if (isMetaApiAuto && prob >= radarMinSensitivity) {
@@ -1636,9 +1633,9 @@
       let updated = false;
       tradesHistory.forEach(t => {
         if (t.status === "RUNNING" && t.symbolId === symbolId) {
-          const targetTp = t.tp2 || t.tp;
+          const targetTp = t.tp1 || t.tp;
           if (t.type === "BUY") {
-            // التحقق من أعلى السعر لوصول الهدف أو أدنى السعر لضرب الوقف
+            // التحقق من الهدف أولاً قبل الوقف لعدم التسرع بالخسارة
             if (currentHigh >= targetTp) {
               t.status = "WON";
               stats.won++;
@@ -1649,7 +1646,6 @@
               updated = true;
             }
           } else {
-            // للبيع: التحقق من أدنى السعر لوصول الهدف أو أعلى السعر لضرب الوقف
             if (currentLow <= targetTp) {
               t.status = "WON";
               stats.won++;
