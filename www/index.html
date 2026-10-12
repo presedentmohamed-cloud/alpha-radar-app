@@ -90,10 +90,6 @@
       background: var(--bg-card); border: 1px solid var(--border-color);
       border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;
     }
-    .notif-info { display: flex; align-items: center; gap: 10px; font-size: 12px; }
-    .notif-info i { font-size: 16px; color: var(--accent-yellow); }
-    .notif-info b { color: var(--text-primary); font-size: 12.5px; }
-    .notif-info p { font-size: 10px; color: var(--text-secondary); }
 
     .switch-ui { position: relative; display: inline-block; width: 44px; height: 24px; }
     .switch-ui input { opacity: 0; width: 0; height: 0; }
@@ -388,8 +384,6 @@
       </div>
     </div>
 
-    <!-- تم إزالة بطاقة إشعارات الفايربيس نهائياً لتصفية التطبيق -->
-
     <!-- بطاقة حساسية الرادار وزر إعادة الضبط -->
     <div class="notif-toggle-card" style="flex-direction: column; align-items: stretch; gap: 10px;">
       <div style="display: flex; flex-direction: column; gap: 5px;">
@@ -639,7 +633,7 @@
   <script>
     let currentLang = "ar";
     let isMuted = false;
-    let highProbNotifEnabled = false; // تم تعطيل التنبيهات الخارجية
+    let highProbNotifEnabled = false;
     let currentTheme = localStorage.getItem("alphaRadarTheme") || "dark";
     
     let radarMinSensitivity = parseInt(localStorage.getItem("radarMinSensitivity")) || 60;
@@ -953,9 +947,6 @@
     }
 
     function initSettings() {
-      const toggle = document.getElementById("highProbNotifToggle");
-      if (toggle) toggle.checked = highProbNotifEnabled;
-      
       const metaToggle = document.getElementById("metaApiAutoToggle");
       if (metaToggle) metaToggle.checked = isMetaApiAuto;
 
@@ -1022,12 +1013,6 @@
     function updateTradingModeBadge() {
       const badge = document.getElementById("mtTradingModeBadge");
       if (badge) badge.innerText = currentLang === 'ar' ? `تداول آلي (+${radarMinSensitivity}%)` : `Auto Trade (+${radarMinSensitivity}%)`;
-    }
-
-    function toggleHighProbNotifications(val) {
-      highProbNotifEnabled = val;
-      try { localStorage.setItem("highProbNotif", val); } catch(e){}
-      showToast(val ? (currentLang === 'ar' ? "تم التفعيل" : "Enabled") : (currentLang === 'ar' ? "تم الإيقاف" : "Disabled"));
     }
 
     function toggleMetaApiAuto(val) {
