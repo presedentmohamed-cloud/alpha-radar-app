@@ -43,18 +43,6 @@
     .badge-status.active .pulse-dot { animation: pulse 1.5s infinite; }
     @keyframes pulse { 0% { transform: scale(0.9); opacity: 0.7; } 50% { transform: scale(1.3); opacity: 1; } 100% { transform: scale(0.9); opacity: 0.7; } }
     .toast-msg { position: fixed; bottom: 20px; z-index: 9999; background: #0ecb81; color: #0b0e14; font-weight: 800; font-size: 12.5px; padding: 10px 18px; border-radius: 8px; box-shadow: 0 4px 14px rgba(0,0,0,0.6); display: none; text-align: center; max-width: 90%; }
-    .metaapi-card { background: var(--bg-card); border: 1px solid var(--border-color); border-top: 3px solid #00c0f3; border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
-    .metaapi-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-    .metaapi-title { font-size: 12.5px; font-weight: 800; display: flex; align-items: center; gap: 6px; color: #00c0f3; }
-    .metaapi-collapse-body { display: none; flex-direction: column; gap: 10px; margin-top: 4px; }
-    .metaapi-collapse-body.open { display: flex; }
-    .metaapi-inputs { display: flex; flex-direction: column; gap: 8px; }
-    .metaapi-row { display: grid; grid-template-columns: 2fr 1.2fr; gap: 8px; }
-    .metaapi-field { display: flex; flex-direction: column; gap: 4px; }
-    .metaapi-field label { font-size: 10.5px; color: var(--text-secondary); font-weight: 600; }
-    .metaapi-input { background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-primary); padding: 7.5px 11px; border-radius: 8px; font-size: 11px; outline: none; font-family: 'JetBrains Mono', monospace; font-weight: 700; }
-    .btn-save-metaapi { background: #00c0f3; color: #071018; border: none; padding: 9px 12px; border-radius: 8px; font-weight: 800; font-size: 11.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
-    .metaapi-status-bar { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 6px; background: rgba(140, 155, 168, 0.08); }
     .performance-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 10px; }
     .stat-box { display: flex; flex-direction: column; align-items: center; gap: 4px; }
     .stat-label { font-size: 10px; color: var(--text-secondary); font-weight: 600; text-align: center; }
@@ -73,11 +61,6 @@
     .state-pass { color: var(--accent-green); } .state-fail { color: var(--accent-red); } .state-wait { color: var(--accent-yellow); }
     .score-box { margin-top: 10px; background: var(--bg-input); border-radius: 10px; padding: 9px 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); }
     .score-rating { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 800; }
-    .news-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-    .news-header { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; font-weight: 700; cursor: pointer; }
-    .news-feed-scroll { display: none; flex-direction: column; gap: 6px; max-height: 220px; overflow-y: auto; margin-top: 4px; }
-    .news-feed-scroll.open { display: flex; }
-    .news-item { background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; font-size: 11px; }
     .settings-grid { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
     .input-group { display: flex; flex-direction: column; gap: 4px; }
     .input-group.full-width { grid-column: span 2; }
@@ -251,9 +234,9 @@
         <button onclick="closeChartModal()" style="background:none; border:none; color:var(--text-primary); font-size:18px; cursor:pointer;">✕</button>
       </div>
       <div class="chart-legend">
-        <span><b style="color: var(--accent-green);">ــــ الدخول</b></span>
-        <span><b style="color: var(--accent-green);">---- الهدف</b></span>
-        <span><b style="color: var(--accent-red);">---- الوقف</b></span>
+        <span><b style="color: var(--accent-green);">ــــ السهم / الدخول</b></span>
+        <span><b style="color: var(--accent-green);">---- الهدف (الحالي فقط)</b></span>
+        <span><b style="color: var(--accent-red);">---- الوقف (الحالي فقط)</b></span>
       </div>
       <div class="chart-container-box">
         <div class="candle-floating-timer" id="candleFloatingTimer">إغلاق الشمعة: <span id="floatingTimeVal">--:--</span></div>
@@ -278,7 +261,8 @@
       { id: "BTCUSDT", name: "البيتكوين (BTC/USD)", enName: "Bitcoin (BTC/USD)", cat: "CRYPTO", precision: 2, minMove: 0.01 },
       { id: "ETHUSDT", name: "الإيثيريوم (ETH/USD)", enName: "Ethereum (ETH/USD)", cat: "CRYPTO", precision: 2, minMove: 0.01 },
       { id: "SOLUSDT", name: "سولانا (SOL/USD)", enName: "Solana (SOL/USD)", cat: "CRYPTO", precision: 2, minMove: 0.01 },
-      { id: "BNBUSDT", name: "بينانس (BNB/USD)", enName: "BNB/USD", cat: "CRYPTO", precision: 2, minMove: 0.01 }
+      { id: "BNBUSDT", name: "بينانس (BNB/USD)", enName: "BNB/USD", cat: "CRYPTO", precision: 2, minMove: 0.01 },
+      { id: "SHIBUSDT", name: "شيبا (SHIB/USD)", enName: "Shiba Inu (SHIB/USD)", cat: "CRYPTO", precision: 6, minMove: 0.000001 }
     ];
 
     function getPairConfig(symbolId) {
@@ -376,6 +360,11 @@
               <div class="param-box"><span class="param-title">الهدف</span><span class="param-val" style="color:var(--accent-green);">${t.tp1.toFixed(t.precision)}</span></div>
               <div class="param-box"><span class="param-title">الوقف</span><span class="param-val" style="color:var(--accent-red);">${t.sl.toFixed(t.precision)}</span></div>
             </div>
+            <div style="text-align: left; padding-top: 4px;">
+              <button class="btn-action-sm" onclick="openSignalChart('${t.symbolId}', '${t.name}', ${t.entry}, ${t.tp1}, ${t.sl}, '${t.type}', true, '${t.interval}')">
+                <i class="fa-solid fa-chart-line"></i> عرض الشارت
+              </button>
+            </div>
           </div>`;
       });
     }
@@ -435,13 +424,11 @@
       return { upper: sma + (multiplier * stdDev), lower: sma - (multiplier * stdDev) };
     }
 
-    // دالة الفحص المعدلة خصيصاً لتفقد كل الصفقات المفتوحة وإغلاقها فوراً بنطاق أهداف أدق لفريم الدقيقة
     function checkOpenTrades(symbolId, currentPrice, currentHigh, currentLow) {
       let updated = false;
       tradesHistory.forEach(t => {
         if (t.status === "RUNNING" && t.symbolId === symbolId) {
           if (t.type === "BUY") {
-            // استخدام سعر الارتفاع (High) والانخفاض (Low) للشمعة لضمان رصد لمس الهدف أو الوقف بدقة تامة
             if (currentHigh >= t.tp1 || currentPrice >= t.tp1) {
               t.status = "WON";
               stats.won++;
@@ -496,14 +483,13 @@
 
         document.getElementById("currentPrice").innerText = "$" + currentPrice.toFixed(symbolObj.precision);
 
-        // فحص كافة الصفقات الجارية ضد السعر الحالي والقمم/القيعان للشمعة الحالية
         checkOpenTrades(symbolObj.id, currentPrice, currentHigh, currentLow);
 
         const ema20 = calculateEMA(closes, Math.min(closes.length, 14));
         const lastEma = ema20[ema20.length - 1];
         document.getElementById("emaVal").innerText = "$" + lastEma.toFixed(symbolObj.precision);
         document.getElementById("emaState").innerHTML = currentPrice >= lastEma ? '<i class="fa-solid fa-check"></i> صاعد' : '<i class="fa-solid fa-xmark"></i> هابط';
-        document.getElementById("emaState").className = currentPrice >= lastEma ? "sig-state state-pass" : "sig-state state-fail";
+        document.getElementById("emaState").className = currentPrice >= lastEma ? 'sig-state state-pass' : 'sig-state state-fail';
 
         const rsi = calculateRSI(closes, 14);
         document.getElementById("rsiVal").innerText = rsi.toFixed(1);
@@ -523,11 +509,9 @@
         document.getElementById("scoreRating").innerText = `${dynamicProb}% (قوي 🟢)`;
         document.getElementById("scoreRating").style.color = "var(--accent-green)";
 
-        // توليد صفقة جديدة فوراً إذا لم توجد صفقة جارية لهذا الزوج
         const hasActiveTrade = tradesHistory.some(t => t.symbolId === symbolObj.id && t.status === "RUNNING");
         if (!hasActiveTrade) {
           const isBuy = currentPrice >= lastEma;
-          // مسافة وقف الهدف والوقف أصبحت أصغر ومناسبة لفريم الدقيقة لضمان سرعة إغلاق الصفقة
           const slDist = currentPrice * 0.0012; 
           const rr = parseFloat(document.getElementById("rrRatioSelect").value) || 1.5;
 
@@ -544,7 +528,8 @@
             prob: dynamicProb,
             precision: symbolObj.precision,
             status: "RUNNING",
-            time: new Date().toLocaleTimeString()
+            time: new Date().toLocaleTimeString(),
+            candleTime: Math.floor(data[data.length - 1][0] / 1000)
           });
           stats.total++;
           updateStatsUI();
@@ -560,7 +545,7 @@
       }
 
       if (isRunning) {
-        setTimeout(runScanLoop, 2000); // تسريع وتيرة الفحص لتصبح كل ثانيتين لسرعة تتبع النتائج
+        setTimeout(runScanLoop, 2000);
       }
     }
 
@@ -576,12 +561,100 @@
     function syncSelectors() {}
     function openDirectChart() { openSignalChart("PAXGUSDT"); }
     function closeChartModal() { document.getElementById("chartModal").style.display = "none"; }
-    function openSignalChart(sym) { 
+    
+    function openSignalChart(sym, name, entry, tp, sl, type, isCustom, interval) { 
       document.getElementById("chartModal").style.display = "flex";
       activeChartSymbol = sym || "PAXGUSDT";
+      activeChartInterval = interval || "1m";
+      const cfg = getPairConfig(activeChartSymbol);
+      
+      const switcher = document.getElementById("chartSymbolSwitcher");
+      const fixedBadge = document.getElementById("chartFixedSymbolBadge");
+      if (isCustom) {
+        switcher.style.display = "none";
+        fixedBadge.style.display = "inline-block";
+        fixedBadge.innerText = `${name} [${activeChartInterval}]`;
+      } else {
+        switcher.style.display = "inline-block";
+        fixedBadge.style.display = "none";
+        switcher.value = activeChartSymbol;
+      }
+      
+      document.getElementById("chartIntervalSwitcher").value = activeChartInterval;
+      renderChartCanvas(activeChartSymbol, activeChartInterval, entry, tp, sl, type);
     }
-    function onChartSwitcherChange() {}
-    function onChartIntervalChange() {}
+
+    function onChartSwitcherChange() {
+      const select = document.getElementById("chartSymbolSwitcher");
+      activeChartSymbol = select.value;
+      const cfg = getPairConfig(activeChartSymbol);
+      openSignalChart(activeChartSymbol, currentLang === "ar" ? cfg.name : cfg.enName, null, null, null, "BUY", false, activeChartInterval);
+    }
+
+    function onChartIntervalChange() {
+      activeChartInterval = document.getElementById("chartIntervalSwitcher").value;
+      const cfg = getPairConfig(activeChartSymbol);
+      const isCustom = document.getElementById("chartSymbolSwitcher").style.display === "none";
+      openSignalChart(activeChartSymbol, currentLang === "ar" ? cfg.name : cfg.enName, null, null, null, "BUY", isCustom, activeChartInterval);
+    }
+
+    async function renderChartCanvas(symbolId, interval, entry, tp, sl, type) {
+      const cfg = getPairConfig(symbolId);
+      const container = document.getElementById("tvChart");
+      container.innerHTML = "";
+
+      chartInstance = LightweightCharts.createChart(container, {
+        layout: { background: { color: '#0b0e14' }, textColor: '#cbd5e1', fontSize: 11 },
+        grid: { vertLines: { color: 'rgba(39, 46, 61, 0.4)' }, horzLines: { color: 'rgba(39, 46, 61, 0.4)' } },
+        rightPriceScale: { borderColor: '#272e3d', textColor: '#cbd5e1', autoScale: true },
+        timeScale: { borderColor: '#272e3d', timeVisible: true }
+      });
+
+      candleSeries = chartInstance.addCandlestickSeries({
+        upColor: '#0ecb81', downColor: '#f6465d',
+        priceFormat: { type: 'price', precision: cfg.precision, minMove: cfg.minMove }
+      });
+
+      try {
+        const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbolId}&interval=${interval}&limit=80`);
+        const klines = await res.json();
+        const chartData = klines.map(c => ({
+          time: Math.floor(c[0] / 1000),
+          open: parseFloat(c[1]),
+          high: parseFloat(c[2]),
+          low: parseFloat(c[3]),
+          close: parseFloat(c[4])
+        }));
+
+        candleSeries.setData(chartData);
+
+        // وضع الأسهم فقط للصفقات القديمة والجديدة بدون إزعاج خطوط الأهداف والوقوف القديمة
+        const markers = [];
+        tradesHistory.filter(t => t.symbolId === symbolId).forEach(t => {
+          const isBuy = (t.type === "BUY");
+          markers.push({
+            time: t.candleTime || chartData[chartData.length - 1].time,
+            position: isBuy ? 'belowBar' : 'aboveBar',
+            color: t.status === 'WON' ? '#0ecb81' : (t.status === 'LOST' ? '#f6465d' : (isBuy ? '#0ecb81' : '#f6465d')),
+            shape: isBuy ? 'arrowUp' : 'arrowDown',
+            size: 2,
+            text: `${t.type} [${t.prob}%]`
+          });
+        });
+        candleSeries.setMarkers(markers);
+
+        // رسم خطوط الـ TP و SL للصفقة الحالية النشطة أو المحددة فقط
+        if (entry) {
+          const isBuy = (type !== "SELL");
+          candleSeries.createPriceLine({ price: entry, color: isBuy ? '#0ecb81' : '#f6465d', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, title: 'الدخول' });
+          if (tp) candleSeries.createPriceLine({ price: tp, color: '#0ecb81', lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dashed, title: 'الهدف (TP)' });
+          if (sl) candleSeries.createPriceLine({ price: sl, color: '#f6465d', lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dashed, title: 'الوقف (SL)' });
+        }
+
+        chartInstance.timeScale().fitContent();
+      } catch(e) {}
+    }
+
     function updateRadarSensitivity(val) { radarMinSensitivity = parseInt(val); showToast("الحساسية: " + val + "%"); }
     function resetRadarDataAndCounters() { stats = { total: 0, won: 0, lost: 0 }; tradesHistory = []; updateStatsUI(); renderTradesUI(); showToast("تم التصفير"); }
 
