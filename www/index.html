@@ -1583,11 +1583,19 @@
       const rrRatio = parseFloat(document.getElementById("rrRatioSelect")?.value) || 1.5;
 
       const entryPrice = currentPrice;
-      const slDist = currentPrice * 0.008; // زيادة مسافة الوقف لمنع الضرب السريع
+      const dist = currentPrice * 0.005; 
       
-      const sl = isBuy ? (entryPrice - slDist) : (entryPrice + slDist);
-      const tp1 = isBuy ? (entryPrice + slDist * rrRatio) : (entryPrice - slDist * rrRatio);
-      const tp2 = isBuy ? (entryPrice + slDist * (rrRatio * 1.5)) : (entryPrice - slDist * (rrRatio * 1.5));
+      // تصحيح منطق حساب الوقف والهدف ليكون صحيحاً لصفقات الشراء والبيع تماماً
+      let sl, tp1, tp2;
+      if (isBuy) {
+        sl = entryPrice - dist;
+        tp1 = entryPrice + (dist * rrRatio);
+        tp2 = entryPrice + (dist * rrRatio * 1.5);
+      } else {
+        sl = entryPrice + dist;
+        tp1 = entryPrice - (dist * rrRatio);
+        tp2 = entryPrice - (dist * rrRatio * 1.5);
+      }
 
       const pairCfg = getPairConfig(id);
       const displayName = currentLang === 'ar' ? pairCfg.name : pairCfg.enName;
@@ -1635,7 +1643,6 @@
         if (t.status === "RUNNING" && t.symbolId === symbolId) {
           const targetTp = t.tp1 || t.tp;
           if (t.type === "BUY") {
-            // التحقق من الهدف أولاً قبل الوقف لعدم التسرع بالخسارة
             if (currentHigh >= targetTp) {
               t.status = "WON";
               stats.won++;
@@ -1646,6 +1653,7 @@
               updated = true;
             }
           } else {
+            // تصحيح التحقق لصفقات البيع (الهدف في الأسفل والوقف في الأعلى)
             if (currentLow <= targetTp) {
               t.status = "WON";
               stats.won++;
