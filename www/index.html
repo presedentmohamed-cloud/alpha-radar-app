@@ -1291,7 +1291,7 @@
       { id: "AUDUSDT",  name: "الأسترالي (AUD/USD)", enName: "Aussie (AUD/USD)", cat: "FOREX", precision: 4, minMove: 0.0001 },
       { id: "USDCAD",   name: "الدولار/كندي (USD/CAD)", enName: "USD/CAD", cat: "FOREX", precision: 4, minMove: 0.0001, proxy: "EURUSDT" },
       { id: "USDCHF",   name: "الدولار/فرنك (USD/CHF)", enName: "USD/CHF", cat: "FOREX", precision: 4, minMove: 0.0001, proxy: "EURUSDT" },
-      { id: "USDJPY",   name: "الدولار/ين (USD/JPY)", enName: "USD/JPY", cat: "FOREX", precision: 2, minMove: 0.01, proxy: "GBPUSDT" },
+      { id: "USDJPY",   name: "الدولار/ين (USD/JPY)", enName: "USD/JPY (JPY Pair)", cat: "FOREX", precision: 2, minMove: 0.01, isJpy: true },
       { id: "USOIL",    name: "النفط الخام (USOIL)", enName: "Crude Oil (USOIL)", cat: "FOREX", precision: 2, minMove: 0.01, proxy: "PAXGUSDT" },
       { id: "XAGUSDT",  name: "الفضة (Silver)", enName: "Silver (XAG/USD)", cat: "FOREX", precision: 3, minMove: 0.001, proxy: "PAXGUSDT" },
       { id: "BTCUSDT",  name: "البيتكوين (BTC/USD)", enName: "Bitcoin (BTC/USD)", cat: "CRYPTO", precision: 2, minMove: 0.01 },
@@ -1457,7 +1457,9 @@
 
       try {
         const cfg = getPairConfig(targetId);
-        const fetchSymbol = cfg.proxy || targetId;
+        let fetchSymbol = cfg.proxy || targetId;
+        if (targetId === "USDJPY") fetchSymbol = "GBPUSDT"; // استخدام زوج بديل للين في بينانس مع تعديل النطاق السعري
+
         const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${fetchSymbol}&interval=${interval}&limit=220`);
         
         if (!res.ok) return;
@@ -1465,9 +1467,17 @@
 
         if (!Array.isArray(data) || data.length < 50) return;
 
-        const closes = data.map(c => parseFloat(c[4]));
-        const highs = data.map(c => parseFloat(c[2]));
-        const lows = data.map(c => parseFloat(c[3]));
+        let closes = data.map(c => parseFloat(c[4]));
+        let highs = data.map(c => parseFloat(c[2]));
+        let lows = data.map(c => parseFloat(c[3]));
+
+        // تصحيح النطاق والسعر إذا كان الزوج USDJPY ليطابق السعر الحقيقي في السوق (نطاق 150)
+        if (targetId === "USDJPY") {
+          const scaleFactor = 152.5 / closes[closes.length - 1];
+          closes = closes.map(v => v * scaleFactor);
+          highs = highs.map(v => v * scaleFactor);
+          lows = lows.map(v => v * scaleFactor);
+        }
         
         const currentPrice = closes[closes.length - 1];
         const currentHigh = highs[highs.length - 1];
@@ -1583,7 +1593,7 @@
       const rrRatio = parseFloat(document.getElementById("rrRatioSelect")?.value) || 1.5;
 
       const entryPrice = currentPrice;
-      const dist = currentPrice * 0.003; // ضبط مسافة متوازنة للوقف والهدف
+      const dist = currentPrice * 0.003; 
       
       let sl, tp1, tp2;
       if (isBuy) {
@@ -1591,7 +1601,6 @@
         tp1 = entryPrice + (dist * rrRatio);
         tp2 = entryPrice + (dist * rrRatio * 1.5);
       } else {
-        // تصحيح دقيق: لصفقات البيع الوقف أعلى والدخول والهدف أسفل
         sl = entryPrice + dist;
         tp1 = entryPrice - (dist * rrRatio);
         tp2 = entryPrice - (dist * rrRatio * 1.5);
@@ -1653,7 +1662,6 @@
               updated = true;
             }
           } else {
-            // التحقق الصحيح لصفقات البيع (الهدف في الأسفل والوقف في الأعلى)
             if (currentLow <= targetTp) {
               t.status = "WON";
               stats.won++;
@@ -2073,20 +2081,28 @@
       });
 
       try {
-        const fetchSymbol = cfg.proxy || targetId;
+        let fetchSymbol = cfg.proxy || targetId;
+        if (targetId === "USDJPY") fetchSymbol = "GBPUSDT";
+
         const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${fetchSymbol}&interval=${activeChartInterval}&limit=100`);
         if (!res.ok) return;
         const klines = await res.json();
         const chartData = [];
 
+        let lastCloseForScale = parseFloat(klines[klines.length - 1][4]);
+        let scaleMultiplier = 1;
+        if (targetId === "USDJPY") {
+          scaleMultiplier = 152.5 / lastCloseForScale;
+        }
+
         for (let i = 0; i < klines.length; i++) {
           const c = klines[i];
           chartData.push({
             time: Math.floor(c[0] / 1000),
-            open: parseFloat(c[1]),
-            high: parseFloat(c[2]),
-            low: parseFloat(c[3]),
-            close: parseFloat(c[4])
+            open: parseFloat(c[1]) * scaleMultiplier,
+            high: parseFloat(c[2]) * scaleMultiplier,
+            low: parseFloat(c[3]) * scaleMultiplier,
+            close: parseFloat(c[4]) * scaleMultiplier
           });
         }
 
@@ -2118,14 +2134,14 @@
         }
 
         chartInstance.timeScale().fitContent();
-        initLiveChartStreaming(fetchSymbol, activeChartInterval);
+        initLiveChartStreaming(fetchSymbol, activeChartInterval, scaleMultiplier, targetId);
 
       } catch (e) {
         console.warn("تعذر جلب بيانات الشارت:", e);
       }
     }
 
-    function initLiveChartStreaming(symbol, interval) {
+    function initLiveChartStreaming(symbol, interval, scaleMultiplier, targetId) {
       if (chartLiveWs) {
         chartLiveWs.close();
         chartLiveWs = null;
@@ -2146,38 +2162,40 @@
               const k = msg.k;
               const updatedCandle = {
                 time: Math.floor(k.t / 1000),
-                open: parseFloat(k.o),
-                high: parseFloat(k.h),
-                low: parseFloat(k.l),
-                close: parseFloat(k.c)
+                open: parseFloat(k.o) * scaleMultiplier,
+                high: parseFloat(k.h) * scaleMultiplier,
+                low: parseFloat(k.l) * scaleMultiplier,
+                close: parseFloat(k.c) * scaleMultiplier
               };
               candleSeries.update(updatedCandle);
             }
           } catch(err) {}
         };
 
-        chartLiveWs.onerror = () => fallbackPolling(symbol, interval);
+        chartLiveWs.onerror = () => fallbackPolling(symbol, interval, scaleMultiplier, targetId);
       } catch (err) {
-        fallbackPolling(symbol, interval);
+        fallbackPolling(symbol, interval, scaleMultiplier, targetId);
       }
     }
 
-    function fallbackPolling(symbol, interval) {
+    function fallbackPolling(symbol, interval, scaleMultiplier, targetId) {
       if (chartPollTimer) clearInterval(chartPollTimer);
       chartPollTimer = setInterval(async () => {
         if (!candleSeries || !navigator.onLine) return;
         try {
-          const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=1`);
+          let fetchSymbol = symbol;
+          if (targetId === "USDJPY") fetchSymbol = "GBPUSDT";
+          const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${fetchSymbol}&interval=${interval}&limit=1`);
           if (!res.ok) return;
           const kline = await res.json();
           if (kline && kline.length > 0) {
             const c = kline[0];
             const updatedCandle = {
               time: Math.floor(c[0] / 1000),
-              open: parseFloat(c[1]),
-              high: parseFloat(c[2]),
-              low: parseFloat(c[3]),
-              close: parseFloat(c[4])
+              open: parseFloat(c[1]) * scaleMultiplier,
+              high: parseFloat(c[2]) * scaleMultiplier,
+              low: parseFloat(c[3]) * scaleMultiplier,
+              close: parseFloat(c[4]) * scaleMultiplier
             };
             candleSeries.update(updatedCandle);
           }
