@@ -1663,9 +1663,8 @@
       const isBuy = (type === "BUY");
       const rrRatio = parseFloat(document.getElementById("rrRatioSelect")?.value) || 1.5;
 
-      const offset = currentPrice * 0.0015;
-      const entryPrice = isBuy ? (currentPrice - offset * 0.4) : (currentPrice + offset * 0.4);
-      const slDist = offset * 2.2;
+      const entryPrice = currentPrice;
+      const slDist = currentPrice * 0.003;
       
       const sl = isBuy ? (entryPrice - slDist) : (entryPrice + slDist);
       const tp1 = isBuy ? (entryPrice + slDist * rrRatio) : (entryPrice - slDist * rrRatio);
@@ -2020,18 +2019,20 @@
 
       symbolTrades.forEach(t => {
         const isBuy = (t.type === "BUY");
-        if (t.status === "WON") {
+        const markerTime = t.candleTime;
+
+        if (t.status === 'WON') {
           markers.push({
-            time: t.candleTime,
+            time: markerTime,
             position: isBuy ? 'belowBar' : 'aboveBar',
             color: '#0ecb81',
             shape: isBuy ? 'arrowUp' : 'arrowDown',
             size: 2,
             text: `TP ${t.entry.toFixed(t.precision)} [${t.prob}%]`
           });
-        } else if (t.status === "LOST") {
+        } else if (t.status === 'LOST') {
           markers.push({
-            time: t.candleTime,
+            time: markerTime,
             position: isBuy ? 'belowBar' : 'aboveBar',
             color: '#f6465d',
             shape: isBuy ? 'arrowDown' : 'arrowUp',
@@ -2040,7 +2041,7 @@
           });
         } else {
           markers.push({
-            time: t.candleTime,
+            time: markerTime,
             position: isBuy ? 'belowBar' : 'aboveBar',
             color: isBuy ? '#0ecb81' : '#f6465d',
             shape: isBuy ? 'arrowUp' : 'arrowDown',
