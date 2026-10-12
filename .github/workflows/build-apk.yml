@@ -18,10 +18,10 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
 
       - name: Install Capacitor CLI & Dependencies
         run: |
@@ -33,7 +33,6 @@ jobs:
       - name: Fix Gradle Build Config & Build APK
         run: |
           cd android
-          # استخدام إصدار أقدم وأكثر استقراراً للـ Gradle لضمان عدم حدوث أخطاء Jar
           ./gradlew wrapper --gradle-version 7.5
           chmod +x gradlew
           ./gradlew clean assembleDebug --no-daemon
