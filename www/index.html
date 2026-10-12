@@ -1835,7 +1835,7 @@
               <button class="btn-action-sm btn-copy-all" title="نسخ كامل التقرير" onclick="copyFullTrade('${t.id}')">
                 <i class="fa-solid fa-clipboard-list"></i> ${i18n[currentLang].btnCopyAll}
               </button>
-              <button class="btn-action-sm" onclick="openSignalChart('${t.symbolId}', '${t.name}', ${t.entry}, ${t.tp1 || t.tp}, ${t.sl}, '${t.type}', true)">
+              <button class="btn-action-sm" onclick="openSignalChart('${t.symbolId}', '${t.name}', ${t.entry}, ${t.tp1 || t.tp}, ${t.sl}, '${t.type}', true, '${t.interval}')">
                 <i class="fa-solid fa-chart-line"></i> ${currentLang === 'ar' ? 'الشارت' : 'Chart'}
               </button>
             </div>
@@ -1900,8 +1900,9 @@
     function openDirectChart() {
       const mode = document.getElementById("symbolSelect").value;
       const targetId = (mode === "AUTO_ALL") ? (activePairsList[currentIndex]?.id || activePairsList[0].id) : mode;
+      const interval = document.getElementById("intervalSelect").value;
       const cfg = getPairConfig(targetId);
-      openSignalChart(targetId, currentLang === "ar" ? cfg.name : cfg.enName, null, null, null, "BUY", false);
+      openSignalChart(targetId, currentLang === "ar" ? cfg.name : cfg.enName, null, null, null, "BUY", false, interval);
     }
 
     function getIntervalSeconds(interval) {
@@ -1937,7 +1938,7 @@
       const select = document.getElementById("chartSymbolSwitcher");
       const targetId = select.value;
       const cfg = getPairConfig(targetId);
-      openSignalChart(targetId, currentLang === "ar" ? cfg.name : cfg.enName, null, null, null, "BUY", false);
+      openSignalChart(targetId, currentLang === "ar" ? cfg.name : cfg.enName, null, null, null, "BUY", false, activeChartInterval);
     }
 
     function onChartIntervalChange() {
@@ -1945,7 +1946,7 @@
       activeChartInterval = select.value;
       const cfg = getPairConfig(activeChartSymbol);
       const isCustomTrade = document.getElementById("chartSymbolSwitcher").style.display === "none";
-      openSignalChart(activeChartSymbol, currentLang === "ar" ? cfg.name : cfg.enName, null, null, null, "BUY", isCustomTrade);
+      openSignalChart(activeChartSymbol, currentLang === "ar" ? cfg.name : cfg.enName, null, null, null, "BUY", isCustomTrade, activeChartInterval);
     }
 
     function applyHistoricalMarkers(symbolId) {
@@ -1990,9 +1991,9 @@
       candleSeries.setMarkers(markers);
     }
 
-    async function openSignalChart(targetId, targetName, entryPrice, tpPrice, slPrice, tradeType, isCustomSignal = false) {
+    async function openSignalChart(targetId, targetName, entryPrice, tpPrice, slPrice, tradeType, isCustomSignal = false, interval = "15m") {
       activeChartSymbol = targetId;
-      const interval = activeChartInterval;
+      activeChartInterval = interval || "15m";
       const cfg = getPairConfig(targetId);
       const isBuy = (tradeType !== "SELL");
       
@@ -2005,7 +2006,7 @@
       if (isCustomSignal) {
         switcher.style.display = "none";
         fixedBadge.style.display = "inline-block";
-        fixedBadge.innerText = targetName;
+        fixedBadge.innerText = `${targetName} [${activeChartInterval}]`;
       } else {
         switcher.style.display = "inline-block";
         fixedBadge.style.display = "none";
@@ -2013,9 +2014,9 @@
       }
 
       const intSwitcher = document.getElementById("chartIntervalSwitcher");
-      if (intSwitcher) intSwitcher.value = interval;
+      if (intSwitcher) intSwitcher.value = activeChartInterval;
 
-      startFloatingCandleCountdown(interval);
+      startFloatingCandleCountdown(activeChartInterval);
 
       const container = document.getElementById("tvChart");
       container.innerHTML = "";
@@ -2076,7 +2077,7 @@
 
       try {
         const fetchSymbol = cfg.proxy || targetId;
-        const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${fetchSymbol}&interval=${interval}&limit=100`);
+        const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${fetchSymbol}&interval=${activeChartInterval}&limit=100`);
         if (!res.ok) return;
         const klines = await res.json();
         const chartData = [];
@@ -2120,7 +2121,7 @@
         }
 
         chartInstance.timeScale().fitContent();
-        initLiveChartStreaming(fetchSymbol, interval);
+        initLiveChartStreaming(fetchSymbol, activeChartInterval);
 
       } catch (e) {
         console.warn("تعذر جلب بيانات الشارت:", e);
