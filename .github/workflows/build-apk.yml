@@ -43,6 +43,12 @@ jobs:
           if ! grep -q "android.permission.POST_NOTIFICATIONS" "$MANIFEST"; then
             sed -i '/<application/i \    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />' "$MANIFEST"
           fi
+          if ! grep -q "android.permission.FOREGROUND_SERVICE" "$MANIFEST"; then
+            sed -i '/<application/i \    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />' "$MANIFEST"
+          fi
+          if ! grep -q "android.permission.WAKE_LOCK" "$MANIFEST"; then
+            sed -i '/<application/i \    <uses-permission android:name="android.permission.WAKE_LOCK" />' "$MANIFEST"
+          fi
           sed -i 's/<application /<application android:usesCleartextTraffic="true" /' "$MANIFEST"
           npx cap sync android
 
