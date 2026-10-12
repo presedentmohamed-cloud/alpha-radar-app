@@ -26,16 +26,17 @@ jobs:
       - name: Install Capacitor CLI & Dependencies
         run: |
           npm init -y
-          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npm install @capacitor/core@latest @capacitor/cli@latest @capacitor/android@latest
           npx cap init "Alpha Radar" "com.alpharadar.app" --web-dir www
           npx cap add android
 
-      - name: Clean Gradle Cache & Build Android APK
+      - name: Fix Gradle Build Config & Build APK
         run: |
           cd android
-          rm -rf ~/.gradle/caches/
+          # استخدام إصدار أقدم وأكثر استقراراً للـ Gradle لضمان عدم حدوث أخطاء Jar
+          ./gradlew wrapper --gradle-version 7.5
           chmod +x gradlew
-          ./gradlew clean assembleDebug
+          ./gradlew clean assembleDebug --no-daemon
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
