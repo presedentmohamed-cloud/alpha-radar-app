@@ -52,12 +52,17 @@ jobs:
           sed -i 's/<application /<application android:usesCleartextTraffic="true" /' "$MANIFEST"
           npx cap sync android
 
-      - name: 5.5. Copy Custom Icon to Android Resources
+      - name: 5.5. Force Replace Android Default Icons
         run: |
           if [ -f "www/icon.png" ]; then
-            mkdir -p android/app/src/main/res/drawable
-            cp www/icon.png android/app/src/main/res/drawable/ic_launcher.png
-            cp www/icon.png android/app/src/main/res/drawable/icon.png
+            for folder in android/app/src/main/res/mipmap-*; do
+              if [ -d "$folder" ]; then
+                cp -f www/icon.png "$folder/ic_launcher.png"
+                cp -f www/icon.png "$folder/ic_launcher_round.png"
+              fi
+            done
+            rm -f android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+            rm -f android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
           fi
 
       - name: 6. Build Debug APK with Gradle
