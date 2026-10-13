@@ -52,6 +52,14 @@ jobs:
           sed -i 's/<application /<application android:usesCleartextTraffic="true" /' "$MANIFEST"
           npx cap sync android
 
+      - name: 5.5. Copy Custom Icon to Android Resources
+        run: |
+          if [ -f "www/icon.png" ]; then
+            mkdir -p android/app/src/main/res/drawable
+            cp www/icon.png android/app/src/main/res/drawable/ic_launcher.png
+            cp www/icon.png android/app/src/main/res/drawable/icon.png
+          fi
+
       - name: 6. Build Debug APK with Gradle
         run: |
           cd android
